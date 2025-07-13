@@ -1,49 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <title>My Phaser Game</title>
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.js"></script>
-  <style>
-    body { margin: 0; overflow: hidden; }
-  </style>
 
+  <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icon256.png" />
   <meta name="theme-color" content="#000000" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-  <script>
-    // サービスワーカー登録
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js")
-          .then(reg => console.log("Service Worker registered", reg))
-          .catch(err => console.error("SW registration failed", err));
-      });
-    }
-  </script>
+  <!-- スタイル -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Phaser本体 -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.js"></script>
 </head>
 <body>
-  <script>
-    const config = {
-      type: Phaser.AUTO,
-      width: window.innerWidth,
-      height: window.innerHeight,
-      scale: {
-        mode: Phaser.Scale.RESIZE,
-        autoCenter: Phaser.Scale.CENTER_BOTH
-      },
-      scene: {
-        preload: function () {
-          this.load.image('logo', 'https://labs.phaser.io/assets/sprites/phaser3-logo.png');
-        },
-        create: function () {
-          this.add.image(this.scale.width / 2, this.scale.height / 2, 'logo');
-        }
-      }
-    };
-
-    const game = new Phaser.Game(config);
-  </script>
+  <script src="main.js"></script>
 </body>
 </html>
