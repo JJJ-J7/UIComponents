@@ -1,0 +1,17 @@
+{
+  "name": "My Phaser Game",
+  "short_name": "PhaserGame",
+  "description": "A simple Phaser game as PWA",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "icon-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ]
+}
