@@ -27,14 +27,18 @@
   <script>
     const config = {
       type: Phaser.AUTO,
-      width: 800,
-      height: 600,
+      width: window.innerWidth,
+      height: window.innerHeight,
+      scale: {
+        mode: Phaser.Scale.RESIZE,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+      },
       scene: {
         preload: function () {
           this.load.image('logo', 'https://labs.phaser.io/assets/sprites/phaser3-logo.png');
         },
         create: function () {
-          this.add.image(400, 300, 'logo');
+          this.add.image(this.scale.width / 2, this.scale.height / 2, 'logo');
         }
       }
     };
