@@ -2,8 +2,8 @@ const CACHE_NAME = "phaser-pwa-v1";
 const urlsToCache = [
   "./index.html",
   "./manifest.json",
-  "./icon-192.png",
-  "./icon-512.png"
+  "./icon-256.png",
+  "./Images/blueR.png",
 ];
 
 // インストール時にキャッシュ

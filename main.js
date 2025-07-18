@@ -15,7 +15,7 @@ const config = {
 let game;
 
 function preload() {
-  this.load.image('logo', 'https://labs.phaser.io/assets/sprites/phaser3-logo.png');
+  this.load.image('logo', 'Images/blueR.png');
 }
 
 function create() {
@@ -30,7 +30,7 @@ function create() {
 
 // 初期化とService Worker登録
 window.addEventListener("load", () => {
-  game = new Phaser.Game(config);
+  //game = new Phaser.Game(config);
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
