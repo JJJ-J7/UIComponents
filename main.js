@@ -16,10 +16,12 @@ let game;
 
 function preload() {
   this.load.image('logo', 'Images/blueR.png');
+  //this.load.image('logo', 'https://labs.phaser.io/assets/sprites/phaser3-logo.png');
 }
 
 function create() {
   this.logo = this.add.image(this.scale.width / 2, this.scale.height / 2, 'logo');
+  
 
   // リサイズ時にロゴを中央に再配置
   this.scale.on('resize', (gameSize) => {
@@ -30,7 +32,7 @@ function create() {
 
 // 初期化とService Worker登録
 window.addEventListener("load", () => {
-  //game = new Phaser.Game(config);
+  game = new Phaser.Game(config);
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
