@@ -189,11 +189,31 @@ function update(time) {
 // 初期化とService Worker登録
 window.addEventListener("load", async () => {
   await initDB();
-  game = new Phaser.Game(config);
 
+  let gameInitError = null;
+  try {
+    game = new Phaser.Game(config);
+  } catch (e) {
+    gameInitError = e;
+    console.error("Phaser.Gameの初期化に失敗:", e);
+  }
+
+  // Phaserの初期化に失敗してもService Workerは登録する
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
       .then(reg => console.log('Service Worker registered:', reg.scope))
       .catch(err => console.error('Service Worker registration failed:', err));
+  }
+
+  // 必要ならエラー表示
+  if (gameInitError) {
+    const errMsg = document.createElement('div');
+    errMsg.textContent = "ゲームの初期化に失敗しました。";
+    errMsg.style.color = "red";
+    errMsg.style.fontSize = "20px";
+    errMsg.style.position = "absolute";
+    errMsg.style.top = "20px";
+    errMsg.style.left = "20px";
+    document.body.appendChild(errMsg);
   }
 });
