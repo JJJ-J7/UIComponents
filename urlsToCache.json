@@ -4,10 +4,10 @@
   "./index.html",
   "./lib/phaser.js",
   "./lib/umd.js",
-  "./main.js",
   "./manifest.json",
-  "./otherScene.js",
   "./sample/icon256.png",
+  "./scenes/main.js",
+  "./scenes/otherScene.js",
   "./style.css",
   "./urlsToCache.json"
 ]
