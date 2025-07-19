@@ -13,6 +13,29 @@ const config = {
 };
 
 let game;
+let dbPromise;
+
+// IndexedDB初期化
+async function initDB() {
+  dbPromise = idb.openDB('counter-db', 1, {
+    upgrade(db) {
+      db.createObjectStore('store');
+    }
+  });
+}
+
+// IndexedDBからカウンタ値を取得
+async function loadCounter() {
+  const db = await dbPromise;
+  const value = await db.get('store', 'counter');
+  return value ?? 0;
+}
+
+// IndexedDBにカウンタ値を保存
+async function saveCounter(value) {
+  const db = await dbPromise;
+  await db.put('store', value, 'counter');
+}
 
 function preload() {
   this.load.image('logo', 'Images/blueR.png');
@@ -60,10 +83,17 @@ function create() {
     buttonHeight
   ).setOrigin(0.5).setInteractive();
 
-  // ボタン押下でカウントアップ
+  // IndexedDBからカウンタ値を読み込んでセット
+  loadCounter().then(value => {
+    this.counter = value;
+    this.titleText.setText(`Hello Phaser! ${this.counter}`);
+  });
+
+  // ボタン押下でカウントアップ＆保存
   buttonZone.on('pointerdown', () => {
     this.counter++;
     this.titleText.setText(`Hello Phaser! ${this.counter}`);
+    saveCounter(this.counter);
   });
 
   // リサイズ時に再配置
@@ -80,7 +110,8 @@ function create() {
 }
 
 // 初期化とService Worker登録
-window.addEventListener("load", () => {
+window.addEventListener("load", async () => {
+  await initDB();
   game = new Phaser.Game(config);
 
   if ('serviceWorker' in navigator) {
