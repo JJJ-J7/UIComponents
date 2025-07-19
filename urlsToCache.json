@@ -3,6 +3,7 @@
   "./Images/blueR.png",
   "./index.html",
   "./lib/phaser.js",
+  "./lib/umd.js",
   "./main.js",
   "./manifest.json",
   "./sample/icon256.png",
