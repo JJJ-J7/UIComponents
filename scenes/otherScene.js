@@ -22,7 +22,3 @@ export class OtherScene extends Phaser.Scene {
     });
   }
 }
-
-// モジュールとしてエクスポート（ESMの場合）
-// export default OtherScene;
-window.OtherScene = OtherScene; // グローバル登録（scriptタグ利用時）
