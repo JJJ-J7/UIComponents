@@ -1,3 +1,5 @@
+import { OtherScene } from './otherScene.js';
+
 const config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
@@ -6,18 +8,19 @@ const config = {
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
-  scene: {
-    preload,
-    create
-  }
+  scene: [
+    { preload, create, update, key: 'default' },
+    OtherScene
+  ]
 };
 
 let game;
 let dbPromise;
 
 // IndexedDB初期化
+// idb は indexedDBのラッパーライブラリで、これを使ってカウンターの値を保存・取得します
 async function initDB() {
-  dbPromise = idb.openDB('counter-db', 1, {
+  dbPromise = idb.openDB('counter-db', 1, { // バージョン1で初期化。DB構成が変わる場合はバージョンを上げる
     upgrade(db) {
       db.createObjectStore('store');
     }
@@ -37,11 +40,15 @@ async function saveCounter(value) {
   await db.put('store', value, 'counter');
 }
 
+// シーンのpreloadメソッド。Phaser のシーン管理の基本メソッド。
+// ここで必要なアセットをロードします。
 function preload() {
   this.load.image('logo', 'Images/blueR.png');
   //this.load.image('logo', 'https://labs.phaser.io/assets/sprites/phaser3-logo.png');
 }
 
+// シーンのcreateメソッド。Phaser のシーン管理の基本メソッド。
+// ここでゲームの初期化やオブジェクトの配置を行います
 function create() {
   //this.logo = this.add.image(this.scale.width / 4, this.scale.height / 4, 'logo');
 
@@ -57,20 +64,19 @@ function create() {
   ).setOrigin(0.5);
 
   // ボタン画像をロードしていない場合は、四角形＋テキストで簡易ボタン
-  const buttonWidth = 200;
-  const buttonHeight = 60;
-  const buttonX = this.scale.width / 2 - buttonWidth / 2;
-  const buttonY = this.scale.height - buttonHeight - 40;
+  this.graphics = this.add.graphics();
+  this.buttonWidth = 200;
+  this.buttonHeight = 60;
+  this.buttonX = this.scale.width / 2 - this.buttonWidth / 2;
+  this.buttonY = this.scale.height - this.buttonHeight - 40;
 
-  // ボタン用グラフィック
-  const graphics = this.add.graphics();
-  graphics.fillStyle(0x007bff, 1);
-  graphics.fillRoundedRect(buttonX, buttonY, buttonWidth, buttonHeight, 20);
+  this.graphics.fillStyle(0x007bff, 1);
+  this.graphics.fillRoundedRect(this.buttonX, this.buttonY, this.buttonWidth, this.buttonHeight, 20);
 
   // ボタンテキスト
   const buttonText = this.add.text(
     this.scale.width / 2, 
-    buttonY + buttonHeight / 2, 
+    this.buttonY + this.buttonHeight / 2, 
     'Click Me', 
     { fontSize: '24px', color: '#fff' }
   ).setOrigin(0.5);
@@ -78,9 +84,9 @@ function create() {
   // 透明なインタラクティブゾーンを重ねてボタン化
   const buttonZone = this.add.zone(
     this.scale.width / 2, 
-    buttonY + buttonHeight / 2, 
-    buttonWidth, 
-    buttonHeight
+    this.buttonY + this.buttonHeight / 2, 
+    this.buttonWidth, 
+    this.buttonHeight
   ).setOrigin(0.5).setInteractive();
 
   // IndexedDBからカウンタ値を読み込んでセット
@@ -96,17 +102,82 @@ function create() {
     saveCounter(this.counter);
   });
 
-  // リサイズ時に再配置
+  // シーンジャンプ用ボタンのサイズ・位置
+  const jumpBtnWidth = 160;
+  const jumpBtnHeight = 50;
+  const jumpBtnX = this.scale.width - jumpBtnWidth / 2 - 20;
+  const jumpBtnY = this.scale.height - jumpBtnHeight / 2 - 20;
+
+  // シーンジャンプ用ボタンのグラフィック
+  this.jumpBtnGraphics = this.add.graphics();
+  this.jumpBtnGraphics.fillStyle(0x28a745, 1);
+  this.jumpBtnGraphics.fillRoundedRect(
+    jumpBtnX - jumpBtnWidth / 2,
+    jumpBtnY - jumpBtnHeight / 2,
+    jumpBtnWidth,
+    jumpBtnHeight,
+    16
+  );
+
+  // シーンジャンプ用ボタンのテキスト
+  const jumpBtnText = this.add.text(
+    jumpBtnX,
+    jumpBtnY,
+    'シーン切替',
+    { fontSize: '22px', color: '#fff' }
+  ).setOrigin(0.5);
+
+  // インタラクティブゾーン
+  const jumpBtnZone = this.add.zone(
+    jumpBtnX,
+    jumpBtnY,
+    jumpBtnWidth,
+    jumpBtnHeight
+  ).setOrigin(0.5).setInteractive();
+
+  // シーンジャンプ処理
+  jumpBtnZone.on('pointerdown', () => {
+    this.scene.start('OtherScene');
+  });
+
+  // リサイズ時の再配置
   this.scale.on('resize', (gameSize) => {
     const { width, height } = gameSize;
     //this.logo.setPosition(width / 4, height / 4);
     this.titleText.setPosition(width / 2, height / 2);
-    graphics.clear();
-    graphics.fillStyle(0x007bff, 1);
-    graphics.fillRoundedRect(width / 2 - buttonWidth / 2, height - buttonHeight - 40, buttonWidth, buttonHeight, 20);
-    buttonText.setPosition(width / 2, height - buttonHeight / 2 - 40);
-    buttonZone.setPosition(width / 2, height - buttonHeight / 2 - 40);
+    this.graphics.clear();
+    this.graphics.fillStyle(0x007bff, 1);
+    this.graphics.fillRoundedRect(width / 2 - this.buttonWidth / 2, height - this.buttonHeight - 40, this.buttonWidth, this.buttonHeight, 20);
+    buttonText.setPosition(width / 2, height - this.buttonHeight / 2 - 40);
+    buttonZone.setPosition(width / 2, height - this.buttonHeight / 2 - 40);
+
+    const newX = width - jumpBtnWidth / 2 - 20;
+    const newY = height - jumpBtnHeight / 2 - 20;
+    this.jumpBtnGraphics.clear();
+    this.jumpBtnGraphics.fillStyle(0x28a745, 1);
+    this.jumpBtnGraphics.fillRoundedRect(
+      newX - jumpBtnWidth / 2,
+      newY - jumpBtnHeight / 2,
+      jumpBtnWidth,
+      jumpBtnHeight,
+      16
+    );
+    jumpBtnText.setPosition(newX, newY);
+    jumpBtnZone.setPosition(newX, newY);
   });
+}
+
+// updateメソッドを追加。Phaser のシーン管理の基本メソッド。
+function update(time) {
+  // timeはms単位
+  const t = time / 1000; // 秒単位に変換
+  // 0.5～1.0で明滅
+  const alpha = 0.75 + 0.25 * Math.sin(t * 2); // 2は速さ。小さくするとゆっくり
+
+  // ボタン再描画
+  this.graphics.clear();
+  this.graphics.fillStyle(0x007bff, alpha);
+  this.graphics.fillRoundedRect(this.buttonX, this.buttonY, this.buttonWidth, this.buttonHeight, 20);
 }
 
 // 初期化とService Worker登録

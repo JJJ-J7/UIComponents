@@ -6,6 +6,7 @@
   "./lib/umd.js",
   "./main.js",
   "./manifest.json",
+  "./otherScene.js",
   "./sample/icon256.png",
   "./style.css",
   "./urlsToCache.json"
