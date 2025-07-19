@@ -143,11 +143,17 @@ function create() {
   // リサイズ時の再配置
   this.scale.on('resize', (gameSize) => {
     const { width, height } = gameSize;
+
     //this.logo.setPosition(width / 4, height / 4);
     this.titleText.setPosition(width / 2, height / 2);
+
+    // カウントアップボタンの位置を更新
+    this.buttonX = width / 2 - this.buttonWidth / 2;
+    this.buttonY = height - this.buttonHeight - 40;
+
     this.graphics.clear();
     this.graphics.fillStyle(0x007bff, 1);
-    this.graphics.fillRoundedRect(width / 2 - this.buttonWidth / 2, height - this.buttonHeight - 40, this.buttonWidth, this.buttonHeight, 20);
+    this.graphics.fillRoundedRect(this.buttonX, this.buttonY, this.buttonWidth, this.buttonHeight, 20);
     buttonText.setPosition(width / 2, height - this.buttonHeight / 2 - 40);
     buttonZone.setPosition(width / 2, height - this.buttonHeight / 2 - 40);
 
