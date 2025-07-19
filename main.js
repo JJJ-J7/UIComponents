@@ -69,7 +69,7 @@ function create() {
   // リサイズ時に再配置
   this.scale.on('resize', (gameSize) => {
     const { width, height } = gameSize;
-    this.logo.setPosition(width / 4, height / 4);
+    //this.logo.setPosition(width / 4, height / 4);
     this.titleText.setPosition(width / 2, height / 2);
     graphics.clear();
     graphics.fillStyle(0x007bff, 1);
