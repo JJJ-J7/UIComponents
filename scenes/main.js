@@ -68,7 +68,7 @@ function create() {
   this.buttonWidth = 200;
   this.buttonHeight = 60;
   this.buttonX = this.scale.width / 2 - this.buttonWidth / 2;
-  this.buttonY = this.scale.height - this.buttonHeight - 40;
+  this.buttonY = this.scale.height - this.buttonHeight - 200;
 
   this.graphics.fillStyle(0x007bff, 1);
   this.graphics.fillRoundedRect(this.buttonX, this.buttonY, this.buttonWidth, this.buttonHeight, 20);
@@ -106,7 +106,7 @@ function create() {
   const jumpBtnWidth = 160;
   const jumpBtnHeight = 50;
   const jumpBtnX = this.scale.width - jumpBtnWidth / 2 - 20;
-  const jumpBtnY = this.scale.height - jumpBtnHeight / 2 - 20;
+  const jumpBtnY = this.scale.height - jumpBtnHeight / 2 - 100;
 
   // シーンジャンプ用ボタンのグラフィック
   this.jumpBtnGraphics = this.add.graphics();
