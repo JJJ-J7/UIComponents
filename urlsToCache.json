@@ -6,8 +6,10 @@
   "./lib/umd.js",
   "./manifest.json",
   "./sample/icon256.png",
+  "./scenes/debugScenes/SceneOther.js",
+  "./scenes/debugScenes/SceneUiTest.js",
   "./scenes/main.js",
-  "./scenes/otherScene.js",
+  "./scenes/SceneMainMenu.js",
   "./style.css",
   "./urlsToCache.json"
 ]
