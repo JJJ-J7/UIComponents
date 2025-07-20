@@ -11,5 +11,14 @@
   "./scenes/main.js",
   "./scenes/SceneMainMenu.js",
   "./style.css",
+  "./UIcomponents/index.js",
+  "./UIcomponents/UI_BaseComponent.js",
+  "./UIcomponents/UI_FreeContainer.js",
+  "./UIcomponents/UI_GridContainer.js",
+  "./UIcomponents/UI_Image.js",
+  "./UIcomponents/UI_ImageButton.js",
+  "./UIcomponents/UI_ImageTextButton.js",
+  "./UIcomponents/UI_TextBox.js",
+  "./UIcomponents/UI_TextButton.js",
   "./urlsToCache.json"
 ]

@@ -25,6 +25,13 @@ async function initDB() {
 // launchMode: 0=UiTestScene, 1=MainMenuScene
 const launchMode = 0; // 必要に応じて 0 または 1 に変更
 
+// ダミーシーンを先頭に追加
+// これにより、Phaserのシーンスタックが正しく機能する
+class DummyScene extends Phaser.Scene {
+  constructor() { super({ key: 'DummyScene' }); }
+  create() {}
+}
+
 const config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
@@ -35,6 +42,7 @@ const config = {
   },
   parent: 'phaser-container',
   scene: [
+    DummyScene,      // 先頭はダミー
     SceneUiTest,
     SceneOther,
     SceneMainMenu
