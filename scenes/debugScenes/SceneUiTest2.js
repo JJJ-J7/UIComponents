@@ -6,6 +6,8 @@ export class SceneUiTest2 extends Phaser.Scene {
   }
 
   create() {
+    // Phaser canvasの背景色を薄い紫に
+    this.cameras.main.setBackgroundColor('rgba(237, 230, 250, 1)');
     console.log(`${this.scene.key} created`);
 
     this.events.on('shutdown', this.shutdown, this);
@@ -36,7 +38,7 @@ export class SceneUiTest2 extends Phaser.Scene {
       cols: 6,
       gap: 8,
       width: 400,
-      height: 70,
+      height: 100,
       parent: document.body,
       position: 'fixed',
       left: '50%',
