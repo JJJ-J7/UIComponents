@@ -49,34 +49,37 @@ export class UI_ImageTextButton extends UI_BaseComponent {
     right,
     bottom,
     zIndex,
+    backgroundColor = '#007bff',
     center = true
   } = {}) {
     const el = document.createElement('button');
     el.type = 'button';
     // width/height未指定時は画像の実サイズを取得し、scaleを適用
-    // サイズ計算用関数
+    // サイズ計算用関数（内容＋paddingを考慮）
     const updateButtonSize = () => {
-      // 画像とテキスト両方の幅・高さを考慮
       const imgRect = this.img ? this.img.getBoundingClientRect() : { width: 0, height: 0 };
       const spanRect = this.span ? this.span.getBoundingClientRect() : { width: 0, height: 0 };
-      let totalWidth = 0, totalHeight = 0;
+      let contentWidth = 0, contentHeight = 0;
       if (imagePosition === 'top' || imagePosition === 'bottom') {
-        totalWidth = Math.max(imgRect.width, spanRect.width);
-        totalHeight = imgRect.height + gap + spanRect.height;
+        contentWidth = Math.max(imgRect.width, spanRect.width);
+        contentHeight = imgRect.height + gap + spanRect.height;
       } else {
-        totalWidth = imgRect.width + gap + spanRect.width;
-        totalHeight = Math.max(imgRect.height, spanRect.height);
+        contentWidth = imgRect.width + gap + spanRect.width;
+        contentHeight = Math.max(imgRect.height, spanRect.height);
       }
+      // padding値（左1em, 右3em, 上下0.5em）
+      const fontSizePx = (typeof fontSize === 'number' ? fontSize : (typeof fontSize === 'string' && fontSize.endsWith('px') ? parseInt(fontSize) : 16));
+      const paddingLeft = 1 * fontSizePx;
+      const paddingRight = 3 * fontSizePx;
+      const paddingV = 0.5 * fontSizePx;
+      // 指定があれば優先
+      let totalWidth = contentWidth + paddingLeft + paddingRight;
+      let totalHeight = contentHeight + 2 * paddingV;
       if (width !== undefined) totalWidth = width;
       if (height !== undefined) totalHeight = height;
       el.style.width = totalWidth * scale + 'px';
       el.style.height = totalHeight * scale + 'px';
-      // center==trueなら中心位置を維持
-      if (center && (el.style.position === 'absolute' || el.style.position === 'fixed')) {
-        el.style.left = '50%';
-        el.style.top = '50%';
-        el.style.transform = 'translate(-50%, -50%)';
-      }
+      el.style.padding = paddingV + 'px ' + paddingRight + 'px ' + paddingV + 'px ' + paddingLeft + 'px';
     };
 
     // 画像とテキストのDOM生成後にサイズ計算
@@ -94,8 +97,9 @@ export class UI_ImageTextButton extends UI_BaseComponent {
     el.style.touchAction = 'manipulation';
     el.style.outline = 'none';
     el.style.webkitTapHighlightColor = 'transparent';
+    el.style.background = backgroundColor;
 
-    super({ el, className, parent, position, left, top, right, bottom, zIndex });
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor });
 
     this.enabled = enabled;
 
@@ -113,6 +117,18 @@ export class UI_ImageTextButton extends UI_BaseComponent {
     this.span.style.fontSize = typeof fontSize === 'number' ? fontSize + 'px' : fontSize;
     this.span.style.verticalAlign = 'middle';
     this.span.style.margin = '0';
+
+    // paddingはupdateButtonSizeで一括設定するため、ここではspanのマージンのみ調整
+    if (imagePosition === 'left' || !imagePosition) {
+      this.span.style.marginRight = '0';
+      this.span.style.marginLeft = '0';
+    } else if (imagePosition === 'right') {
+      this.span.style.marginLeft = gap + 'px';
+      this.span.style.marginRight = '0';
+    } else {
+      this.span.style.marginRight = '0';
+      this.span.style.marginLeft = '0';
+    }
 
     el.textContent = '';
 

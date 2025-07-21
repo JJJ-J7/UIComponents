@@ -100,12 +100,30 @@ export class SceneUiTest extends Phaser.Scene {
       top: '70%',
       className: 'sample-ui-textbox'
     });
+    
+    // 5. 画像＋テキストボタン（中央さらに下）
+    this.imgTextButton = new UI.UI_ImageTextButton({
+      imageSrc: 'Images/BtnGreen.png',
+      text: 'Image+Text',
+      fontSize: 20,
+      onClick: () => {
+        console.log('ImageText Button Pressed');
+      },
+      parent: document.body,
+      position: 'fixed',
+      left: '50%',
+      top: '85%',
+      zIndex: 1000
+    });
   }
 
   shutdown() {
     if (this.textButton) this.textButton.destroy();
+    if (this.textButton2) this.textButton2.destroy();
     if (this.uiImage) this.uiImage.destroy();
     if (this.imgButton) this.imgButton.destroy();
+    if (this.imgButton2) this.imgButton2.destroy();
     if (this.textBox) this.textBox.destroy();
+    if (this.imgTextButton) this.imgTextButton.destroy();
   }
 }
