@@ -1,3 +1,5 @@
+//sample: import * as UI from '../UIcomponents/index.js';
+
 export { UI_BaseComponent } from './UI_BaseComponent.js';
 export { UI_TextBox } from './UI_TextBox.js';
 export { UI_Image } from './UI_Image.js';

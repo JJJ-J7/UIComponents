@@ -35,14 +35,15 @@ export class UI_TextButton extends UI_BaseComponent {
     enabled = true,
     onClick,
     className = '',
-    parent,
+    parent = document.body,
     position,
     left,
     top,
     right,
     bottom,
-    zIndex
-  }) {
+    zIndex,
+    center = true
+  } = {}) {
     const el = document.createElement('button');
     el.type = 'button';
     el.style.width = width + 'px';
@@ -114,5 +115,24 @@ export class UI_TextButton extends UI_BaseComponent {
 
   setText(text) {
     this.el.textContent = text;
+    // サイズ再計算（auto→width/height固定値に戻す）
+    this.el.style.width = '';
+    this.el.style.height = '';
+    // レイアウト確定後のサイズ取得
+    const rect = this.el.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      this.el.style.width = rect.width + 'px';
+      this.el.style.height = rect.height + 'px';
+    }
+    // center==trueなら中心維持
+    if (this.center && (this.left || this.top)) {
+      // left/topが50%等ならOK、px指定なら中心補正
+      if (typeof this.left === 'number' && typeof rect.width === 'number') {
+        this.el.style.left = (this.left + rect.width/2) + 'px';
+      }
+      if (typeof this.top === 'number' && typeof rect.height === 'number') {
+        this.el.style.top = (this.top + rect.height/2) + 'px';
+      }
+    }
   }
 }

@@ -1,11 +1,11 @@
 [
   "./icon256.png",
   "./Images/blueR.png",
+  "./Images/BtnGreen.png",
   "./index.html",
   "./lib/phaser.js",
   "./lib/umd.js",
   "./manifest.json",
-  "./sample/icon256.png",
   "./scenes/debugScenes/SceneOther.js",
   "./scenes/debugScenes/SceneUiTest.js",
   "./scenes/main.js",

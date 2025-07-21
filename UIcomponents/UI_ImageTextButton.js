@@ -36,10 +36,11 @@ export class UI_ImageTextButton extends UI_BaseComponent {
     fontSize = 20,
     width,
     height,
+    scale = 1,
     enabled = true,
     onClick,
     className = '',
-    parent,
+    parent = document.body,
     imagePosition = 'left',
     gap = 8,
     position,
@@ -47,12 +48,39 @@ export class UI_ImageTextButton extends UI_BaseComponent {
     top,
     right,
     bottom,
-    zIndex
-  }) {
+    zIndex,
+    center = true
+  } = {}) {
     const el = document.createElement('button');
     el.type = 'button';
-    el.style.width = width + 'px';
-    el.style.height = height + 'px';
+    // width/height未指定時は画像の実サイズを取得し、scaleを適用
+    // サイズ計算用関数
+    const updateButtonSize = () => {
+      // 画像とテキスト両方の幅・高さを考慮
+      const imgRect = this.img ? this.img.getBoundingClientRect() : { width: 0, height: 0 };
+      const spanRect = this.span ? this.span.getBoundingClientRect() : { width: 0, height: 0 };
+      let totalWidth = 0, totalHeight = 0;
+      if (imagePosition === 'top' || imagePosition === 'bottom') {
+        totalWidth = Math.max(imgRect.width, spanRect.width);
+        totalHeight = imgRect.height + gap + spanRect.height;
+      } else {
+        totalWidth = imgRect.width + gap + spanRect.width;
+        totalHeight = Math.max(imgRect.height, spanRect.height);
+      }
+      if (width !== undefined) totalWidth = width;
+      if (height !== undefined) totalHeight = height;
+      el.style.width = totalWidth * scale + 'px';
+      el.style.height = totalHeight * scale + 'px';
+      // center==trueなら中心位置を維持
+      if (center && (el.style.position === 'absolute' || el.style.position === 'fixed')) {
+        el.style.left = '50%';
+        el.style.top = '50%';
+        el.style.transform = 'translate(-50%, -50%)';
+      }
+    };
+
+    // 画像とテキストのDOM生成後にサイズ計算
+    setTimeout(updateButtonSize, 0);
     el.style.border = 'none';
     el.style.borderRadius = '8px';
     el.style.cursor = 'pointer';
@@ -64,6 +92,8 @@ export class UI_ImageTextButton extends UI_BaseComponent {
     el.style.userSelect = 'none';
     el.style.webkitUserSelect = 'none';
     el.style.touchAction = 'manipulation';
+    el.style.outline = 'none';
+    el.style.webkitTapHighlightColor = 'transparent';
 
     super({ el, className, parent, position, left, top, right, bottom, zIndex });
 
@@ -111,6 +141,8 @@ export class UI_ImageTextButton extends UI_BaseComponent {
         el.appendChild(this.span);
         break;
     }
+    // 画像ロード後にも再計算
+    this.img.onload = updateButtonSize;
 
     // イベント
     if (onClick) {
@@ -156,5 +188,27 @@ export class UI_ImageTextButton extends UI_BaseComponent {
 
   setText(text) {
     this.span.textContent = text;
+    // テキスト変更後にサイズ再計算
+    setTimeout(() => {
+      // center==trueなら中心維持のためleft/top/transformも再設定
+      if (this.center && (this.el.style.position === 'absolute' || this.el.style.position === 'fixed')) {
+        this.el.style.left = '50%';
+        this.el.style.top = '50%';
+        this.el.style.transform = 'translate(-50%, -50%)';
+      }
+      // サイズ再計算
+      const imgRect = this.img.getBoundingClientRect();
+      const spanRect = this.span.getBoundingClientRect();
+      let totalWidth = 0, totalHeight = 0;
+      if (this.el.style.flexDirection === 'column') {
+        totalWidth = Math.max(imgRect.width, spanRect.width);
+        totalHeight = imgRect.height + gap + spanRect.height;
+      } else {
+        totalWidth = imgRect.width + gap + spanRect.width;
+        totalHeight = Math.max(imgRect.height, spanRect.height);
+      }
+      this.el.style.width = totalWidth + 'px';
+      this.el.style.height = totalHeight + 'px';
+    }, 0);
   }
 }

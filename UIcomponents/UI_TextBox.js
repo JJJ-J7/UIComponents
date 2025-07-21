@@ -22,8 +22,15 @@ export class UI_TextBox extends UI_BaseComponent {
     width,
     height,
     className = "",
-    parent = document.body
-  }) {
+    parent = document.body,
+    position,
+    left,
+    top,
+    right,
+    bottom,
+    zIndex,
+    center = true
+  } = {}) {
     const el = document.createElement('div');
     el.textContent = text;
     el.style.width = width + 'px';
@@ -37,11 +44,29 @@ export class UI_TextBox extends UI_BaseComponent {
     el.style.justifyContent = 'center';
     el.style.borderRadius = '8px';
     el.style.boxSizing = 'border-box';
-    super({ el, className, parent });
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center });
     this.el = el;
   }
 
   setText(text) {
     this.el.textContent = text;
+    // サイズ再計算（auto→width/height固定値に戻す）
+    this.el.style.width = '';
+    this.el.style.height = '';
+    // レイアウト確定後のサイズ取得
+    const rect = this.el.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      this.el.style.width = rect.width + 'px';
+      this.el.style.height = rect.height + 'px';
+    }
+    // center==trueなら中心維持
+    if (this.center && (this.left || this.top)) {
+      if (typeof this.left === 'number' && typeof rect.width === 'number') {
+        this.el.style.left = (this.left + rect.width/2) + 'px';
+      }
+      if (typeof this.top === 'number' && typeof rect.height === 'number') {
+        this.el.style.top = (this.top + rect.height/2) + 'px';
+      }
+    }
   }
 }

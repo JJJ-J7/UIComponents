@@ -17,21 +17,42 @@ export class UI_Image extends UI_BaseComponent {
     alt = "",
     width,
     height,
+    scale = 1,
     className = "",
     parent = document.body,
     backgroundColor = "transparent",
-    borderRadius = "8px"
-  }) {
+    borderRadius = "8px",
+    position,
+    left,
+    top,
+    right,
+    bottom,
+    zIndex,
+    center = true
+  } = {}) {
     const el = document.createElement('img');
     el.src = src;
     el.alt = alt;
-    el.style.width = width + 'px';
-    el.style.height = height + 'px';
     el.style.background = backgroundColor;
     el.style.borderRadius = borderRadius;
     el.style.display = 'block';
     el.style.objectFit = 'contain';
-    super({ el, className, parent });
+
+    // width/height未指定時は画像の実サイズを取得し、scaleを適用
+    if (width !== undefined && height !== undefined) {
+      el.style.width = (width * scale) + 'px';
+      el.style.height = (height * scale) + 'px';
+    } else {
+      // 画像のロード後に実サイズ取得
+      el.onload = () => {
+        const w = el.naturalWidth;
+        const h = el.naturalHeight;
+        el.style.width = (w * scale) + 'px';
+        el.style.height = (h * scale) + 'px';
+      };
+    }
+
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center });
     this.el = el;
   }
 }

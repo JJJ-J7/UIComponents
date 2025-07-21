@@ -26,21 +26,36 @@ export class UI_ImageButton extends UI_BaseComponent {
     alt = '',
     width,
     height,
+    scale = 1,
     enabled = true,
     onClick,
     className = '',
-    parent,
+    parent = document.body,
     position,
     left,
     top,
     right,
     bottom,
-    zIndex
-  }) {
+    zIndex,
+    center = true
+  } = {}) {
     const el = document.createElement('button');
     el.type = 'button';
-    el.style.width = width + 'px';
-    el.style.height = height + 'px';
+    // width/height未指定時は画像の実サイズを取得し、scaleを適用
+    if (width !== undefined && height !== undefined) {
+      el.style.width = (width * scale) + 'px';
+      el.style.height = (height * scale) + 'px';
+    } else {
+      // 画像のロード後に実サイズ取得
+      const tempImg = document.createElement('img');
+      tempImg.src = imageSrc;
+      tempImg.onload = () => {
+        const w = tempImg.naturalWidth;
+        const h = tempImg.naturalHeight;
+        el.style.width = (w * scale) + 'px';
+        el.style.height = (h * scale) + 'px';
+      };
+    }
     el.style.border = 'none';
     el.style.borderRadius = '8px';
     el.style.cursor = 'pointer';
@@ -50,6 +65,8 @@ export class UI_ImageButton extends UI_BaseComponent {
     el.style.userSelect = 'none';
     el.style.webkitUserSelect = 'none';
     el.style.touchAction = 'manipulation';
+    el.style.outline = 'none';
+    el.style.webkitTapHighlightColor = 'transparent';
 
     super({ el, className, parent, position, left, top, right, bottom, zIndex });
 
