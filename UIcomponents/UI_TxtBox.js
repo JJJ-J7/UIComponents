@@ -1,6 +1,6 @@
 import { UI_BaseComponent } from './UI_BaseComponent.js';
 
-export class UI_TextBox extends UI_BaseComponent {
+export class UI_TxtBox extends UI_BaseComponent {
   /**
    * @param {Object} options
    * @param {string} options.text - 表示するテキスト

@@ -3,7 +3,7 @@ import { UI_BaseComponent } from './UI_BaseComponent.js';
 /**
  * 画像ボタンUI
  */
-export class UI_ImageButton extends UI_BaseComponent {
+export class UI_ImgBtn extends UI_BaseComponent {
   /**
    * @param {Object} options
    * @param {string} options.imageSrc

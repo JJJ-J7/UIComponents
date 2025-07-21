@@ -1,6 +1,6 @@
 import { UI_BaseComponent } from './UI_BaseComponent.js';
 
-export class UI_Image extends UI_BaseComponent {
+export class UI_Img extends UI_BaseComponent {
   /**
    * @param {Object} options
    * @param {string} options.src - 画像URL

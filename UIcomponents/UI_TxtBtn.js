@@ -3,7 +3,7 @@ import { UI_BaseComponent } from './UI_BaseComponent.js';
 /**
  * テキストボタンUI
  */
-export class UI_TextButton extends UI_BaseComponent {
+export class UI_TxtBtn extends UI_BaseComponent {
   /**
    * @param {Object} options
    * @param {string} options.text
