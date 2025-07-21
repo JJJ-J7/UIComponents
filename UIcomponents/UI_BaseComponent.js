@@ -31,17 +31,27 @@ export class UI_BaseComponent {
     if (!this.el) {
       this.el = document.createElement('div');
     }
+    this.className = className;
     if (className) this.el.className = className;
+    this.position = position;
     if (position) this.el.style.position = position;
+    this.left = left;
     if (left !== undefined) this.el.style.left = typeof left === 'number' ? left + 'px' : left;
+    this.top = top;
     if (top !== undefined) this.el.style.top = typeof top === 'number' ? top + 'px' : top;
+    this.right = right;
     if (right !== undefined) this.el.style.right = typeof right === 'number' ? right + 'px' : right;
+    this.bottom = bottom;
     if (bottom !== undefined) this.el.style.bottom = typeof bottom === 'number' ? bottom + 'px' : bottom;
+    this.zIndex = zIndex;
     if (zIndex !== undefined) this.el.style.zIndex = zIndex;
+    this.backgroundColor = backgroundColor;
     if (backgroundColor !== undefined) this.el.style.background = backgroundColor;
+    this.center = center;
     if (center) {
       this.el.style.transform = 'translate(-50%, -50%)';
     }
+    this.parent = parent;
     if (parent && this.el) parent.appendChild(this.el);
     this._destroyTimer = null;
     console.log(`[${new Date().toISOString()}] BaseComponent outerHTML:`, this.el.outerHTML);
@@ -82,13 +92,16 @@ export class UI_BaseComponent {
    */
   setScaleOnly(scale = 1) {
     const style = window.getComputedStyle(this.el);
-    const matrix = style.transform;
-    let base = '';
-    if (matrix && matrix !== 'none') {
-      // 既存のtransform値からscaleを除去
-      base = style.transform.replace(/scale\([^)]+\)/, '').trim();
+    let t = style.transform;
+    if (!t || t === 'none') {
+      this.el.style.transform = `scale(${scale})`;
+      return;
     }
-    // baseが空ならscaleのみ、baseがあればbase + scale
-    this.el.style.transform = (base ? base + ' ' : '') + `scale(${scale})`;
+    // scale()が含まれていれば置換、なければ末尾に追加
+    if (/scale\([^)]*\)/.test(t)) {
+      this.el.style.transform = t.replace(/scale\([^)]*\)/, `scale(${scale})`);
+    } else {
+      this.el.style.transform = t + ` scale(${scale})`;
+    }
   }
 }

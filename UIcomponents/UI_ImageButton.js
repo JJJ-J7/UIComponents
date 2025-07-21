@@ -47,6 +47,9 @@ export class UI_ImageButton extends UI_BaseComponent {
     el.style.transition = 'filter 0.2s, opacity 0.2s, transform 0.08s';
     el.style.padding = '0';
     el.style.background = 'transparent';
+    el.style.userSelect = 'none';
+    el.style.webkitUserSelect = 'none';
+    el.style.touchAction = 'manipulation';
 
     super({ el, className, parent, position, left, top, right, bottom, zIndex });
 
@@ -71,20 +74,21 @@ export class UI_ImageButton extends UI_BaseComponent {
     }
 
     // 押下時のアニメーション
+    const baseTransform = this.center ? 'translate(-50%, -50%)' : '';    
     el.addEventListener('mousedown', () => {
-      if (this.enabled) this.setScaleOnly(1.08);
+      if (this.enabled) el.style.transform = `${baseTransform} scale(1.08)`;
     });
     el.addEventListener('touchstart', () => {
-      if (this.enabled) this.setScaleOnly(1.08);
+      if (this.enabled) el.style.transform = `${baseTransform} scale(1.08)`;
     });
     el.addEventListener('mouseup', () => {
-      this.setScaleOnly(1.0/1.08);
+      el.style.transform = `${baseTransform} scale(1)`;
     });
     el.addEventListener('mouseleave', () => {
-      this.setScaleOnly(1.0/1.08);
+      el.style.transform = `${baseTransform} scale(1)`;
     });
     el.addEventListener('touchend', () => {
-      this.setScaleOnly(1.0/1.08);
+      el.style.transform = `${baseTransform} scale(1)`;
     });
 
     this.setEnabled(this.enabled);
