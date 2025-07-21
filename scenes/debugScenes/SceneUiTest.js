@@ -6,25 +6,29 @@ export class SceneUiTest extends Phaser.Scene {
   }
 
   create() {
-    console.log('SceneUiTest created');
+    console.log(`${this.scene.key} created`);
+    
+    this.events.on('shutdown', this.shutdown, this);
+    this.events.on('destroy', this.shutdown, this);
+    
 
     // 1. テキストボタン（中央やや上）
     this.textButton = new UI.UI_TextButton({
-      text: 'Test Button',
+      text: 'Jump Button',
       backgroundColor: '#007bff',
       textColor: '#fff',
       fontFamily: 'sans-serif',
       fontSize: 20,
-      width: 160,
-      height: 48,
       onClick: () => {
-        console.log('Text Button Pressed');
+        console.log('Jump Button Pressed');
       },
       parent: document.body,
       position: 'fixed',
       left: '50%',
       top: '10%',
-      zIndex: 1000
+      zIndex: 1000,
+      scene: this,
+      gotoScene: 'SceneUiTest2' // シーン遷移のための設定
     });
 
     this.textButton2 = new UI.UI_TextButton({
@@ -33,8 +37,6 @@ export class SceneUiTest extends Phaser.Scene {
       textColor: '#fff',
       fontFamily: 'sans-serif',
       fontSize: 20,
-      width: 160,
-      height: 48,
       onClick: () => {
         console.log('Text Button2 Pressed');
       },
@@ -90,8 +92,6 @@ export class SceneUiTest extends Phaser.Scene {
     // 4. テキストボックス（中央やや下）
     this.textBox = new UI.UI_TextBox({
       text: 'Sample TextBox',
-      width: 180,
-      height: 40,
       backgroundColor: '#222',
       textColor: '#fff',
       parent: document.body,
@@ -100,7 +100,7 @@ export class SceneUiTest extends Phaser.Scene {
       top: '70%',
       className: 'sample-ui-textbox'
     });
-    
+
     // 5. 画像＋テキストボタン（中央さらに下）
     this.imgTextButton = new UI.UI_ImageTextButton({
       imageSrc: 'Images/BtnGreen.png',

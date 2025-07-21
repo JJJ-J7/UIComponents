@@ -34,6 +34,8 @@ export class UI_TextButton extends UI_BaseComponent {
     height,
     enabled = true,
     onClick,
+    scene = null,
+    gotoScene = null,
     className = '',
     parent = document.body,
     position,
@@ -46,8 +48,23 @@ export class UI_TextButton extends UI_BaseComponent {
   } = {}) {
     const el = document.createElement('button');
     el.type = 'button';
-    el.style.width = width + 'px';
-    el.style.height = height + 'px';
+    // width/height未指定時はテキストサイズ＋マージンで自動設定
+    if (width !== undefined && height !== undefined) {
+      el.style.width = width + 'px';
+      el.style.height = height + 'px';
+    } else {
+      // 仮サイズで描画し、レイアウト後に自動調整
+      el.style.width = 'auto';
+      el.style.height = 'auto';
+      setTimeout(() => {
+        const rect = el.getBoundingClientRect();
+        // デフォルトマージン: 左右16px, 上下8px
+        const marginH = 16, marginV = 8;
+        el.style.width = (rect.width + marginH * 2) + 'px';
+        el.style.height = (rect.height + marginV * 2) + 'px';
+        el.style.padding = marginV + 'px ' + marginH + 'px';
+      }, 0);
+    }
     el.style.border = 'none';
     el.style.borderRadius = '8px';
     el.style.cursor = 'pointer';
@@ -68,7 +85,23 @@ export class UI_TextButton extends UI_BaseComponent {
     this.enabled = enabled;
 
     // イベント
-    if (onClick) {
+    // onClickまたはgotoScene指定時のイベント
+    // 多重発火防止用フラグ
+    this._jumping = false;
+    if (gotoScene && scene) {
+      el.addEventListener('click', (e) => {
+        if (!this.enabled || this._jumping) return;
+        this._jumping = true;
+        if (onClick) onClick(e);
+        // 押下アニメーションを再生（scale(1)に戻す）
+        el.style.transform = `${this.center ? 'translate(-50%, -50%)' : ''} scale(1)`;
+        // アニメーション時間(80ms)後にシーンジャンプ
+        setTimeout(() => {
+          scene.scene.start(gotoScene, { from: scene.key });
+          this._jumping = false;
+        }, 100);
+      });
+    } else if (onClick) {
       el.addEventListener('click', (e) => {
         if (this.enabled) onClick(e);
       });

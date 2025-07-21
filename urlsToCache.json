@@ -8,6 +8,7 @@
   "./manifest.json",
   "./scenes/debugScenes/SceneOther.js",
   "./scenes/debugScenes/SceneUiTest.js",
+  "./scenes/debugScenes/SceneUiTest2.js",
   "./scenes/main.js",
   "./scenes/SceneMainMenu.js",
   "./style.css",

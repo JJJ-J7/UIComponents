@@ -33,8 +33,21 @@ export class UI_TextBox extends UI_BaseComponent {
   } = {}) {
     const el = document.createElement('div');
     el.textContent = text;
-    el.style.width = width + 'px';
-    el.style.height = height + 'px';
+    // width/height未指定時はテキストサイズ＋マージンで自動設定
+    if (width !== undefined && height !== undefined) {
+      el.style.width = width + 'px';
+      el.style.height = height + 'px';
+    } else {
+      el.style.width = 'auto';
+      el.style.height = 'auto';
+      setTimeout(() => {
+        const rect = el.getBoundingClientRect();
+        const marginH = 16, marginV = 8;
+        el.style.width = (rect.width + marginH * 2) + 'px';
+        el.style.height = (rect.height + marginV * 2) + 'px';
+        el.style.padding = marginV + 'px ' + marginH + 'px';
+      }, 0);
+    }
     el.style.background = backgroundColor;
     el.style.color = textColor;
     el.style.fontFamily = fontFamily;

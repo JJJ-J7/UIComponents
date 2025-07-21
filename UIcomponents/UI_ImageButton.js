@@ -29,6 +29,8 @@ export class UI_ImageButton extends UI_BaseComponent {
     scale = 1,
     enabled = true,
     onClick,
+    scene = null,
+    gotoScene = null,
     className = '',
     parent = document.body,
     position,
@@ -84,7 +86,13 @@ export class UI_ImageButton extends UI_BaseComponent {
     el.appendChild(this.img);
 
     // イベント
-    if (onClick) {
+    // onClickまたはgotoScene指定時のイベント
+    if (gotoScene && scene) {
+      el.addEventListener('click', (e) => {
+        if (this.enabled && onClick) onClick(e);
+        if (this.enabled) scene.scene.start(gotoScene, { from: scene.key });
+      });
+    } else if (onClick) {
       el.addEventListener('click', (e) => {
         if (this.enabled) onClick(e);
       });

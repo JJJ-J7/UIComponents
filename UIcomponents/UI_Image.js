@@ -43,12 +43,17 @@ export class UI_Image extends UI_BaseComponent {
       el.style.width = (width * scale) + 'px';
       el.style.height = (height * scale) + 'px';
     } else {
+      // 画像ロード前は非表示＋サイズ0
+      el.style.opacity = '0';
+      el.style.width = '0px';
+      el.style.height = '0px';
       // 画像のロード後に実サイズ取得
       el.onload = () => {
         const w = el.naturalWidth;
         const h = el.naturalHeight;
         el.style.width = (w * scale) + 'px';
         el.style.height = (h * scale) + 'px';
+        el.style.opacity = '1';
       };
     }
 

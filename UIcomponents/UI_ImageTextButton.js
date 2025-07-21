@@ -39,6 +39,8 @@ export class UI_ImageTextButton extends UI_BaseComponent {
     scale = 1,
     enabled = true,
     onClick,
+    scene = null,
+    gotoScene = null,
     className = '',
     parent = document.body,
     imagePosition = 'left',
@@ -161,7 +163,13 @@ export class UI_ImageTextButton extends UI_BaseComponent {
     this.img.onload = updateButtonSize;
 
     // イベント
-    if (onClick) {
+    // onClickまたはgotoScene指定時のイベント
+    if (gotoScene && scene) {
+      el.addEventListener('click', (e) => {
+        if (this.enabled && onClick) onClick(e);
+        if (this.enabled) scene.scene.start(gotoScene, { from: scene.key });
+      });
+    } else if (onClick) {
       el.addEventListener('click', (e) => {
         if (this.enabled) onClick(e);
       });

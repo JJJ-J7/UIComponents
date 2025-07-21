@@ -1,4 +1,5 @@
 import { SceneUiTest } from './debugScenes/SceneUiTest.js';
+import { SceneUiTest2 } from './debugScenes/SceneUiTest2.js';
 import { SceneOther } from './debugScenes/SceneOther.js';
 import { SceneMainMenu } from './SceneMainMenu.js';
 
@@ -44,6 +45,7 @@ const config = {
   scene: [
     DummyScene,      // 先頭はダミー
     SceneUiTest,
+    SceneUiTest2,
     SceneOther,
     SceneMainMenu
   ]
