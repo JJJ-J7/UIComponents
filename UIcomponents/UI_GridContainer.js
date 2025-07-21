@@ -28,14 +28,16 @@ export class UI_GridContainer extends UI_BaseComponent {
     outerMargin = 8,
     backgroundColor = '',
     className = '',
-    parent = document.body
+    parent = document.body,
+    position = 'fixed',
+    left,
+    top,
+    right,
+    bottom,
+    zIndex,
+    center = true
   }) {
     const el = document.createElement('div');
-    el.style.position = 'absolute';
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
-    el.style.width = width + 'px';
-    el.style.height = height + 'px';
     el.style.overflow = 'auto';
     el.style.boxSizing = 'border-box';
     el.style.padding = outerMargin + 'px';
@@ -44,7 +46,7 @@ export class UI_GridContainer extends UI_BaseComponent {
     el.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
     el.style.gap = `${marginY}px ${marginX}px`;
     if (backgroundColor) el.style.background = backgroundColor;
-    super({ el, className, parent });
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center });
     this.el = el;
 
     this.rows = rows;
@@ -54,6 +56,12 @@ export class UI_GridContainer extends UI_BaseComponent {
     this.outerMargin = outerMargin;
     this.children = [];
     this.backgroundColor = backgroundColor;
+    // サイズ指定があれば反映
+    if (width !== undefined) el.style.width = width + 'px';
+    if (height !== undefined) el.style.height = height + 'px';
+    // 位置指定があれば反映
+    if (x !== undefined) el.style.left = x + 'px';
+    if (y !== undefined) el.style.top = y + 'px';
   }
 
   setBackgroundColor(color) {
@@ -61,6 +69,26 @@ export class UI_GridContainer extends UI_BaseComponent {
     this.el.style.background = color;
   }
 
+
+  /**
+   * 指定セルに子要素を追加
+   * @param {UI_BaseComponent} child
+   * @param {number} row 0-based
+   * @param {number} col 0-based
+   */
+  addChild(child, row, col) {
+    child.el.style.gridRow = (row + 1) + ' / span 1';
+    child.el.style.gridColumn = (col + 1) + ' / span 1';
+    // グリッド内の子要素は100%サイズ＆相対配置＆左上揃え
+    child.el.style.position = 'relative';
+    //child.el.style.transform = '';
+    //if (child.center !== undefined) child.center = false;
+    this.children.push(child);
+    this.el.appendChild(child.el);
+    this._updateGrid();
+  }
+
+  // 既存のaddは従来通り
   add(child) {
     this.children.push(child);
     this.el.appendChild(child.el);

@@ -31,6 +31,9 @@ export class UI_BaseComponent {
     if (!this.el) {
       this.el = document.createElement('div');
     }
+    // UIコンポーネント識別用属性とインスタンス参照
+    this.el.setAttribute('data-ui-component', '');
+    this.el.__uiInstance = this;
     this.className = className;
     if (className) this.el.className = className;
     this.position = position;

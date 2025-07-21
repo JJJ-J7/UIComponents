@@ -13,7 +13,7 @@ export class SceneUiTest extends Phaser.Scene {
     
 
     // 1. テキストボタン（中央やや上）
-    this.textButton = new UI.UI_TextButton({
+    this.textButton = new UI.UI_TxtBtn({
       text: 'Jump Button',
       backgroundColor: '#007bff',
       textColor: '#fff',
@@ -31,7 +31,7 @@ export class SceneUiTest extends Phaser.Scene {
       gotoScene: 'SceneUiTest2' // シーン遷移のための設定
     });
 
-    this.textButton2 = new UI.UI_TextButton({
+    this.textButton2 = new UI.UI_TxtBtn({
       text: 'Invalid Button',
       backgroundColor: '#007bff',
       textColor: '#fff',
@@ -49,7 +49,7 @@ export class SceneUiTest extends Phaser.Scene {
     });
 
     // 2. 画像（中央）
-    this.uiImage = new UI.UI_Image({
+    this.uiImage = new UI.UI_Img({
       src: 'Images/blueR.png',
       parent: document.body,
       position: 'fixed',
@@ -62,7 +62,7 @@ export class SceneUiTest extends Phaser.Scene {
     });
 
     // 3. 画像ボタン（中央やや下）
-    this.imgButton = new UI.UI_ImageButton({
+    this.imgButton = new UI.UI_ImgBtn({
       imageSrc: 'Images/BtnGreen.png',
       onClick: () => {
         console.log('Image Button Pressed');
@@ -75,7 +75,7 @@ export class SceneUiTest extends Phaser.Scene {
       scale: 1
     });
 
-    this.imgButton2 = new UI.UI_ImageButton({
+    this.imgButton2 = new UI.UI_ImgBtn({
       imageSrc: 'Images/BtnGreen.png',
       onClick: () => {
         console.log('Image Button2 Pressed');
@@ -90,7 +90,7 @@ export class SceneUiTest extends Phaser.Scene {
     });
 
     // 4. テキストボックス（中央やや下）
-    this.textBox = new UI.UI_TextBox({
+    this.textBox = new UI.UI_TxtBox({
       text: 'Sample TextBox',
       backgroundColor: '#222',
       textColor: '#fff',
@@ -102,7 +102,7 @@ export class SceneUiTest extends Phaser.Scene {
     });
 
     // 5. 画像＋テキストボタン（中央さらに下）
-    this.imgTextButton = new UI.UI_ImageTextButton({
+    this.imgTextButton = new UI.UI_ImgTxtBtn({
       imageSrc: 'Images/BtnGreen.png',
       text: 'Image+Text',
       fontSize: 20,
@@ -118,12 +118,14 @@ export class SceneUiTest extends Phaser.Scene {
   }
 
   shutdown() {
-    if (this.textButton) this.textButton.destroy();
-    if (this.textButton2) this.textButton2.destroy();
-    if (this.uiImage) this.uiImage.destroy();
-    if (this.imgButton) this.imgButton.destroy();
-    if (this.imgButton2) this.imgButton2.destroy();
-    if (this.textBox) this.textBox.destroy();
-    if (this.imgTextButton) this.imgTextButton.destroy();
+    // document.body配下のUI_BaseComponent系要素を一括destroy
+    const uiEls = Array.from(document.body.querySelectorAll('[data-ui-component]'));
+    uiEls.forEach(el => {
+      if (el.__uiInstance && typeof el.__uiInstance.destroy === 'function') {
+        el.__uiInstance.destroy();
+      } else {
+        el.remove();
+      }
+    });
   }
 }

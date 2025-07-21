@@ -70,7 +70,7 @@ export class UI_ImgBtn extends UI_BaseComponent {
     el.style.outline = 'none';
     el.style.webkitTapHighlightColor = 'transparent';
 
-    super({ el, className, parent, position, left, top, right, bottom, zIndex });
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, center });
 
     this.enabled = enabled;
 

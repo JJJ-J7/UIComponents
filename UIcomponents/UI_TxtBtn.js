@@ -78,7 +78,7 @@ export class UI_TxtBtn extends UI_BaseComponent {
     el.style.webkitUserSelect = 'none';
     el.style.touchAction = 'manipulation';
 
-    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor});
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center });
 
     this._backgroundColor = backgroundColor;
     this._textColor = textColor;

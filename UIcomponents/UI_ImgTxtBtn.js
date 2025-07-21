@@ -101,7 +101,7 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
     el.style.webkitTapHighlightColor = 'transparent';
     el.style.background = backgroundColor;
 
-    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor });
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center });
 
     this.enabled = enabled;
 
