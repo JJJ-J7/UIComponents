@@ -14,6 +14,13 @@ export class UI_FreeContainer extends UI_BaseComponent {
    * @param {string} [options.backgroundColor]
    * @param {string} [options.className]
    * @param {HTMLElement} [options.parent]
+   * @param {string} [options.position='absolute'] - CSS position
+   * @param {number} [options.left] - left座標（x優先）
+   * @param {number} [options.top] - top座標（y優先）
+   * @param {number} [options.right] - right座標
+   * @param {number} [options.bottom] - bottom座標
+   * @param {number} [options.zIndex]
+   * @param {boolean} [options.center] - 親の中央に配置するか
    */
   constructor({
     x,
@@ -22,54 +29,79 @@ export class UI_FreeContainer extends UI_BaseComponent {
     height,
     backgroundColor = '',
     className = '',
-    parent = document.body
+    parent = document.body,
+    position = 'absolute',
+    left,
+    top,
+    right,
+    bottom,
+    zIndex,
+    center,
+    borderRadius
   }) {
     const el = document.createElement('div');
-    el.style.position = 'absolute';
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
-    el.style.width = width + 'px';
-    el.style.height = height + 'px';
+    el.style.position = position;
+    // x/y優先、なければleft/top/right/bottom
+    if (x !== undefined) el.style.left = x + 'px';
+    else if (left !== undefined) el.style.left = typeof left === 'number' ? left + 'px' : left;
+    if (y !== undefined) el.style.top = y + 'px';
+    else if (top !== undefined) el.style.top = typeof top === 'number' ? top + 'px' : top;
+    if (right !== undefined) el.style.right = typeof right === 'number' ? right + 'px' : right;
+    if (bottom !== undefined) el.style.bottom = typeof bottom === 'number' ? bottom + 'px' : bottom;
+    if (width !== undefined) el.style.width = width + 'px';
+    if (height !== undefined) el.style.height = height + 'px';
     el.style.overflow = 'hidden';
     el.style.boxSizing = 'border-box';
+    if (zIndex !== undefined) el.style.zIndex = zIndex;
     if (backgroundColor) el.style.background = backgroundColor;
-    super({ el, className, parent });
+    if (borderRadius !== undefined) el.style.borderRadius = typeof borderRadius === 'number' ? borderRadius + 'px' : borderRadius;
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center });
     this.el = el;
 
     this.children = [];
     this.backgroundColor = backgroundColor;
+    this.borderRadius = borderRadius;
   }
 
   /**
+   * 子要素を追加する。位置・サイズ・スタイルはoptionsで指定。
    * @param {UI_BaseComponent} child
-   * @param {number} x - 子要素の左上X座標（コンテナ基準）
-   * @param {number} y - 子要素の左上Y座標（コンテナ基準）
-   * @param {number} [width] - 子要素の幅（省略時はchild.elの既存値）
-   * @param {number} [height] - 子要素の高さ（省略時はchild.elの既存値）
+   * @param {Object} [options] - left, top, right, bottom, width, height, zIndex, center など
    */
-  add(child, x, y, width, height) {
-    child.el.style.position = 'absolute';
-    child.el.style.left = x + 'px';
-    child.el.style.top = y + 'px';
-    if (width !== undefined) child.el.style.width = width + 'px';
-    if (height !== undefined) child.el.style.height = height + 'px';
+  add(child, options = {}) {
+    child.el.style.position = 'absolute'; // 子要素は相対位置
+    if (options.left !== undefined) child.el.style.left = typeof options.left === 'number' ? options.left + 'px' : options.left;
+    if (options.top !== undefined) child.el.style.top = typeof options.top === 'number' ? options.top + 'px' : options.top;
+    if (options.right !== undefined) child.el.style.right = typeof options.right === 'number' ? options.right + 'px' : options.right;
+    if (options.bottom !== undefined) child.el.style.bottom = typeof options.bottom === 'number' ? options.bottom + 'px' : options.bottom;
+    if (options.width !== undefined) child.el.style.width = options.width + 'px';
+    if (options.height !== undefined) child.el.style.height = options.height + 'px';
+    if (options.zIndex !== undefined) child.el.style.zIndex = options.zIndex;
+    if (options.center && options.width !== undefined && options.height !== undefined) {
+      child.el.style.left = `calc(50% - ${options.width/2}px)`;
+      child.el.style.top = `calc(50% - ${options.height/2}px)`;
+    }
     this.children.push(child);
     this.el.appendChild(child.el);
   }
 
   /**
-   * 子要素の位置・サイズを変更
+   * 子要素の位置・サイズ・スタイルを変更する。全てoptionsで指定。
    * @param {UI_BaseComponent} child
-   * @param {number} x
-   * @param {number} y
-   * @param {number} [width]
-   * @param {number} [height]
+   * @param {Object} [options] - left, top, right, bottom, width, height, zIndex, center など
    */
-  setChildRect(child, x, y, width, height) {
-    child.el.style.left = x + 'px';
-    child.el.style.top = y + 'px';
-    if (width !== undefined) child.el.style.width = width + 'px';
-    if (height !== undefined) child.el.style.height = height + 'px';
+  setChildRect(child, options = {}) {
+    if (options.left !== undefined) child.el.style.left = typeof options.left === 'number' ? options.left + 'px' : options.left;
+    if (options.top !== undefined) child.el.style.top = typeof options.top === 'number' ? options.top + 'px' : options.top;
+    if (options.right !== undefined) child.el.style.right = typeof options.right === 'number' ? options.right + 'px' : options.right;
+    if (options.bottom !== undefined) child.el.style.bottom = typeof options.bottom === 'number' ? options.bottom + 'px' : options.bottom;
+    if (options.width !== undefined) child.el.style.width = options.width + 'px';
+    if (options.height !== undefined) child.el.style.height = options.height + 'px';
+    if (options.zIndex !== undefined) child.el.style.zIndex = options.zIndex;
+    if (options.center && options.width !== undefined && options.height !== undefined) {
+      child.el.style.left = `calc(50% - ${options.width/2}px)`;
+      child.el.style.top = `calc(50% - ${options.height/2}px)`;
+    }
   }
 
   remove(child) {
@@ -94,6 +126,9 @@ export class UI_FreeContainer extends UI_BaseComponent {
   setBackgroundColor(color) {
     this.backgroundColor = color;
     this.el.style.background = color;
+    if (this.borderRadius !== undefined) {
+      this.el.style.borderRadius = typeof this.borderRadius === 'number' ? this.borderRadius + 'px' : this.borderRadius;
+    }
   }
 
   setRect(x, y, width, height) {
@@ -101,5 +136,8 @@ export class UI_FreeContainer extends UI_BaseComponent {
     this.el.style.top = y + 'px';
     this.el.style.width = width + 'px';
     this.el.style.height = height + 'px';
+    if (this.borderRadius !== undefined) {
+      this.el.style.borderRadius = typeof this.borderRadius === 'number' ? this.borderRadius + 'px' : this.borderRadius;
+    }
   }
 }

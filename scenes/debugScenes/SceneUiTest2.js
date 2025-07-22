@@ -100,6 +100,74 @@ export class SceneUiTest2 extends Phaser.Scene {
         console.log(`Added buttonV at (${r+1},${c+1})`);
       }
     }
+
+    // --- UI_FreeContainer サンプル ---
+    this.freeContainer = new UI.UI_FreeContainer({
+      width: 400,
+      height: 300,
+      backgroundColor: 'rgba(1, 136, 141, 1)',
+      parent: document.body,
+      position: 'fixed',
+      left: '50%',
+      top: '70%',
+      zIndex: 1000,
+      borderRadius: 30,
+    });
+
+    // UI_TxtBox
+    const txtBox = new UI.UI_TxtBox({
+      text: 'Sample TextBox',
+      width: 200,
+      height: 40,
+      backgroundColor: '#fff',
+      textColor: '#222',
+      fontSize: 18
+    });
+    this.freeContainer.add(txtBox, { left: '20%', top: '10%' });
+
+    // UI_TxtBtn
+    const txtBtn = new UI.UI_TxtBtn({
+      text: 'Text Button',
+      width: 140,
+      height: 40,
+      backgroundColor: '#28a745',
+      textColor: '#fff',
+      fontSize: 18
+    });
+    this.freeContainer.add(txtBtn, { left: '30%', top: '20%' });
+
+    // UI_ImgBtn
+    const imgBtn = new UI.UI_ImgBtn({
+      imageSrc: 'Images/BtnGreen.png',
+      text: 'ImgBtn',
+      fontSize: 16
+    });
+    this.freeContainer.add(imgBtn, { left: '70%', top: '70%' });
+
+    // UI_GridContainer (縦3ボタン)
+    const grid = new UI.UI_GridContainer({
+      rows: 3,
+      cols: 1,
+      width: 120,
+      height: 150,
+      parent: undefined,
+      backgroundColor: '#e0e0f0',
+    });
+    for (let r = 0; r < 6; r++) {
+      const btn = new UI.UI_TxtBtn({
+        text: `GridBtn${r+1}`,
+        width: 100,
+        height: 40,
+        backgroundColor: '#444',
+        textColor: '#fff',
+        fontSize: 16,
+        left: '50%',
+        top: '50%'
+      });
+      grid.addChild(btn, r, 0);
+    }
+    this.freeContainer.add(grid, { left: '50%', top: '50%' });
+
   }
 
   shutdown() {
