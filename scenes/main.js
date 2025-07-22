@@ -52,6 +52,16 @@ const config = {
 };
 
 window.addEventListener("load", async () => {
+  // ストレージ永続化をリクエスト
+  if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist().then(granted => {
+      if (granted) {
+        console.log("ストレージ永続化が許可されました");
+      } else {
+        console.log("ストレージ永続化は許可されませんでした");
+      }
+    });
+  }
   await initDB();
 
   let gameInitError = null;

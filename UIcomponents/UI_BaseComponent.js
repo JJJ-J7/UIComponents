@@ -26,7 +26,7 @@ export class UI_BaseComponent {
     backgroundColor,
     center = true
   } = {}) {
-    console.log('UI_BaseComponent:');
+    //console.log('UI_BaseComponent:');
     this.el = el;
     if (!this.el) {
       this.el = document.createElement('div');
@@ -57,7 +57,7 @@ export class UI_BaseComponent {
     this.parent = parent;
     if (parent && this.el) parent.appendChild(this.el);
     this._destroyTimer = null;
-    console.log(`[${new Date().toISOString()}] BaseComponent outerHTML:`, this.el.outerHTML);
+    //console.log(`[${new Date().toISOString()}] BaseComponent outerHTML:`, this.el.outerHTML);
   }
 
   show() {
