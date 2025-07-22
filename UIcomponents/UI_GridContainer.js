@@ -35,7 +35,8 @@ export class UI_GridContainer extends UI_BaseComponent {
     right,
     bottom,
     zIndex,
-    center = true
+    center = true,
+    borderRadius
   }) {
     const el = document.createElement('div');
     el.style.overflow = 'auto';
@@ -46,6 +47,7 @@ export class UI_GridContainer extends UI_BaseComponent {
     el.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
     el.style.gap = `${marginY}px ${marginX}px`;
     if (backgroundColor) el.style.background = backgroundColor;
+    if (borderRadius !== undefined) el.style.borderRadius = typeof borderRadius === 'number' ? borderRadius + 'px' : borderRadius;
     super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center });
     this.el = el;
 
@@ -56,6 +58,7 @@ export class UI_GridContainer extends UI_BaseComponent {
     this.outerMargin = outerMargin;
     this.children = [];
     this.backgroundColor = backgroundColor;
+    this.borderRadius = borderRadius;
     // サイズ指定があれば反映
     if (width !== undefined) el.style.width = width + 'px';
     if (height !== undefined) el.style.height = height + 'px';
