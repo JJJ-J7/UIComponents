@@ -8,5 +8,5 @@ export { UI_ImgBtn } from './UI_ImgBtn.js';
 export { UI_ImgTxtBtn} from './UI_ImgTxtBtn.js';
 export { UI_GridContainer } from './UI_GridContainer.js';
 export { UI_FreeContainer } from './UI_FreeContainer.js';
-export { UITheme } from './UI_ThemeColors.js';
+export { UI_ThemeColors } from './UI_ThemeColors.js';
 // 必要に応じて他のコンポーネントも追加

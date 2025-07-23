@@ -10,7 +10,7 @@ class SampleDialog extends UI.UI_FreeContainer {
       top: '50%',
       width: window.innerWidth,
       height: window.innerHeight,
-      backgroundColor: 'rgba(0,0,0,0.3)',
+      backgroundColor: UI.UI_ThemeColors.bgbase,
       zIndex: 1999,
       position: 'fixed',
       className: 'sample-dialog-overlay',
@@ -21,7 +21,7 @@ class SampleDialog extends UI.UI_FreeContainer {
     super({
       width: 320,
       height: 180,
-      backgroundColor: '#fff',
+      backgroundColor: UI.UI_ThemeColors.background,
       borderRadius: 16,
       zIndex: 2000,
       position: 'fixed',
@@ -51,7 +51,7 @@ class SampleDialog extends UI.UI_FreeContainer {
       width: 200,
       height: 40,
       backgroundColor: 'transparent',
-      textColor: '#222',
+      textColor: UI.UI_ThemeColors.txtDark,
       fontSize: 18
     });
     this.add(label, { left: '50%', top: '50%' });
@@ -77,7 +77,7 @@ export class SceneUiTest2 extends Phaser.Scene {
 
   create() {
     // Phaser canvasの背景色を薄い紫に
-    this.cameras.main.setBackgroundColor('rgba(237, 230, 250, 1)');
+    this.cameras.main.setBackgroundColor(UI.UI_ThemeColors.background);
     console.log(`${this.scene.key} created`);
 
     this.events.on('shutdown', this.shutdown, this);

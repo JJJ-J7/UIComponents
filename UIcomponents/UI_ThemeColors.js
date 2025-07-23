@@ -1,8 +1,8 @@
 // UI Theme Colors
 // ここで全UI共通の色テーマを定義します。
-// 例: import { UITheme } from './UI_ThemeColors.js';
+// 例: import { UI_ThemeColors } from './UI_ThemeColors.js';
 
-export const UITheme = {
+export const UI_ThemeColors = {
   background: '#f8f9fa', // 全体背景色  
   success: '#28a745',   // 成功・OK
   danger: '#e44',       // エラー・警告

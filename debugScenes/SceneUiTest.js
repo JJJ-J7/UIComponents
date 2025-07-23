@@ -7,7 +7,7 @@ export class SceneUiTest extends Phaser.Scene {
 
   create() {
     // Phaser canvasの背景色を薄い紫に
-    this.cameras.main.setBackgroundColor('rgba(237, 230, 250, 1)');
+    this.cameras.main.setBackgroundColor(UI.UI_ThemeColors.background);
     console.log(`${this.scene.key} created`);
     
     this.events.on('shutdown', this.shutdown, this);
