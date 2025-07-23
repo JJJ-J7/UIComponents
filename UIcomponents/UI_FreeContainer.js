@@ -37,7 +37,9 @@ export class UI_FreeContainer extends UI_BaseComponent {
     bottom,
     zIndex,
     center,
-    borderRadius
+    borderRadius,
+    onClick,
+    pointerEvents
   }) {
     const el = document.createElement('div');
     el.style.position = position;
@@ -55,6 +57,12 @@ export class UI_FreeContainer extends UI_BaseComponent {
     if (zIndex !== undefined) el.style.zIndex = zIndex;
     if (backgroundColor) el.style.background = backgroundColor;
     if (borderRadius !== undefined) el.style.borderRadius = typeof borderRadius === 'number' ? borderRadius + 'px' : borderRadius;
+    if (pointerEvents) el.style.pointerEvents = pointerEvents;
+    if (typeof onClick === 'function') {
+      el.addEventListener('click', onClick);
+      // pointerEventsが未指定ならautoに
+      if (!pointerEvents) el.style.pointerEvents = 'auto';
+    }
     super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center });
     this.el = el;
 

@@ -1,5 +1,75 @@
 import * as UI from '../../UIcomponents/index.js';
 
+// サンプルダイアログクラス
+// 先頭に書くのはclass SceneUiTest2で呼び出す前に定義すべきだから。
+class SampleDialog extends UI.UI_FreeContainer {
+  constructor({ onClose } = {}) {
+    // UI_FreeContainerで下敷きを生成
+    const bgbase = new UI.UI_FreeContainer({
+      left: '50%',
+      top: '50%',
+      width: window.innerWidth,
+      height: window.innerHeight,
+      backgroundColor: 'rgba(0,0,0,0.3)',
+      zIndex: 1999,
+      position: 'fixed',
+      className: 'sample-dialog-overlay',
+      parent: document.body,
+      onClick: () => this.close()
+    });
+
+    super({
+      width: 320,
+      height: 180,
+      backgroundColor: '#fff',
+      borderRadius: 16,
+      zIndex: 2000,
+      position: 'fixed',
+      left: '50%',
+      top: '50%',
+      className: 'sample-dialog',
+      parent: document.body
+    });
+    this._bgbase = bgbase;
+    this._onClose = onClose;
+
+    // 閉じるボタン
+    const closeBtn = new UI.UI_TxtBtn({
+      text: '×',
+      width: 40,
+      height: 40,
+      backgroundColor: '#e44',
+      textColor: '#fff',
+      fontSize: 22,
+      onClick: () => this.close()
+    });
+    this.add(closeBtn, { right: '5%', top: '15%' });
+  
+    // サンプルテキスト
+    const label = new UI.UI_TxtBox({
+      text: 'This is a sample dialog.',
+      width: 200,
+      height: 40,
+      backgroundColor: 'transparent',
+      textColor: '#222',
+      fontSize: 18
+    });
+    this.add(label, { left: '50%', top: '50%' });
+  }
+
+  /**
+   * ダイアログとオーバーレイを閉じる（共通処理）
+   */
+  close() {
+    this.el.remove();
+    if (this._bgbase && this._bgbase.el && this._bgbase.el.parentNode) this._bgbase.el.remove();
+    if (typeof this._onClose === 'function') this._onClose();
+  }
+}
+
+/** * SceneUiTest2クラス
+ * UIコンポーネントのテストシーン
+ */
 export class SceneUiTest2 extends Phaser.Scene {
   constructor() {
     super({ key: 'SceneUiTest2' });
@@ -123,7 +193,7 @@ export class SceneUiTest2 extends Phaser.Scene {
       textColor: '#222',
       fontSize: 18
     });
-    this.freeContainer.add(txtBox, { left: '20%', top: '10%' });
+    this.freeContainer.add(txtBox, { left: '0%', top: '10%' });
 
     // UI_TxtBtn
     const txtBtn = new UI.UI_TxtBtn({
@@ -142,7 +212,7 @@ export class SceneUiTest2 extends Phaser.Scene {
       text: 'ImgBtn',
       fontSize: 16
     });
-    this.freeContainer.add(imgBtn, { left: '70%', top: '70%' });
+    this.freeContainer.add(imgBtn, { left: '100%', top: '70%' });
 
     // UI_GridContainer (縦3ボタン)
     const grid = new UI.UI_GridContainer({
@@ -167,6 +237,31 @@ export class SceneUiTest2 extends Phaser.Scene {
       grid.addChild(btn, r, 0);
     }
     this.freeContainer.add(grid, { left: '50%', top: '50%' });
+
+    this.dialogButton = new UI.UI_TxtBtn({
+      text: 'Dialog Button',
+      backgroundColor: '#007bff',
+      textColor: '#fff',
+      fontFamily: 'sans-serif',
+      fontSize: 20,
+      onClick: () => {
+        if (!this.sampleDialog) {
+          this.sampleDialog = new SampleDialog({
+            onClose: () => { this.sampleDialog = null; }
+          });
+        } else {
+          if (!document.body.contains(this.sampleDialog.el)) {
+            document.body.appendChild(this.sampleDialog.el);
+          }
+        }
+        this.sampleDialog.el.style.display = '';
+      },
+      parent: document.body,
+      position: 'fixed',
+      left: '50%',
+      top: '90%',
+      zIndex: 1000,
+    });
 
   }
 
