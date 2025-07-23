@@ -1,4 +1,4 @@
-import * as UI from '../../UIcomponents/index.js';
+import * as UI from '../UIcomponents/index.js';
 
 // サンプルダイアログクラス
 // 先頭に書くのはclass SceneUiTest2で呼び出す前に定義すべきだから。

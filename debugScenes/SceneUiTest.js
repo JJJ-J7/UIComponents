@@ -1,4 +1,4 @@
-import * as UI from '../../UIcomponents/index.js';
+import * as UI from '../UIcomponents/index.js';
 
 export class SceneUiTest extends Phaser.Scene {
   constructor() {

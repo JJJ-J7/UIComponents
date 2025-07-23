@@ -1,4 +1,5 @@
 import { UI_BaseComponent } from './UI_BaseComponent.js';
+import { UI_Theme } from './UI_ThemeColors.js';
 
 /**
  * 画像＋テキストボタンUI
@@ -31,7 +32,8 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
     imageSrc,
     alt = '',
     text,
-    textColor = '#fff',
+    textColor = UI_Theme.txtLight,
+    backgroundColor = UI_ThemeColors.btnActive,
     fontFamily = 'sans-serif',
     fontSize = 20,
     width,
@@ -51,7 +53,6 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
     right,
     bottom,
     zIndex,
-    backgroundColor = '#007bff',
     center = true
   } = {}) {
     const el = document.createElement('button');

@@ -1,4 +1,5 @@
 import { UI_BaseComponent } from './UI_BaseComponent.js';
+import { UI_ThemeColors } from './UI_ThemeColors.js';
 
 /**
  * テキストボタンUI
@@ -26,8 +27,8 @@ export class UI_TxtBtn extends UI_BaseComponent {
    */
   constructor({
     text,
-    backgroundColor,
-    textColor,
+    textColor = UI_ThemeColors.txtLight,
+    backgroundColor = UI_ThemeColors.btnActive,
     fontFamily,
     fontSize,
     width,

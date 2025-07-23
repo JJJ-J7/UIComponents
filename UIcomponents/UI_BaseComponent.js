@@ -23,7 +23,7 @@ export class UI_BaseComponent {
     right,
     bottom,
     zIndex,
-    backgroundColor,
+    backgroundColor = '',
     center = true
   } = {}) {
     //console.log('UI_BaseComponent:');

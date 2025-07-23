@@ -1,4 +1,5 @@
 import { UI_BaseComponent } from './UI_BaseComponent.js';
+import { UI_ThemeColors } from './UI_ThemeColors.js';
 
 export class UI_TxtBox extends UI_BaseComponent {
   /**
@@ -15,8 +16,8 @@ export class UI_TxtBox extends UI_BaseComponent {
    */
   constructor({
     text,
-    textColor = "#fff",
-    backgroundColor = "transparent",
+    textColor = UI_ThemeColors.txtDark,
+    backgroundColor = UI_ThemeColors.txtBgLight,
     fontFamily = "sans-serif",
     fontSize = 20,
     width,
