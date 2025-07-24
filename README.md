@@ -5,11 +5,13 @@
 
 ## 別プロジェクトでの変更を元リポジトリに反映する方法（clone & cherry-pick）
 
+0. Github 上で、このテンプレートをもとに新規リポジトリを作る
+
 1. 新しいリポジトリをcloneする
 
+   親フォルダで
    ```powershell
    git clone https://github.com/あなたのユーザー名/新リポジトリ名.git
-   cd 新リポジトリ名
    ```
 
 2. 変更をコミット＆pushする（新リポジトリで作業・コミット・push）
