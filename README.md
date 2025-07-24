@@ -1,5 +1,7 @@
-# Games
-キャッシュ対象のファイルが変更になったときは、
+# UI Components
+
+## PWAとしての注意点
+キャッシュ対象のファイルが増減したときは、
 コミット前に、ターミナルで node .\lib\generate_offline.js を実行してurlsTOCache.json を更新すること
 
 
