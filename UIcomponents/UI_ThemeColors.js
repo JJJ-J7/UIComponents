@@ -16,3 +16,12 @@ export const UI_ThemeColors = {
   bgbase: 'rgba(0,0,0,0.3)', // モーダル下敷き
   // 必要に応じて追加
 };
+
+export const UI_FontSize = {
+  body: '16px',        // 本文フォントサイズ
+  sub: '12px',         // サブテキストフォントサイズ
+  header: '24px',      // ヘッダーフォントサイズ
+  dlgTxt: '14px',       // ダイアログテキストフォントサイズ
+  // 必要に応じて追加
+};
+
