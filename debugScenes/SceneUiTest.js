@@ -50,13 +50,31 @@ export class SceneUiTest extends Phaser.Scene {
       enabled: false // 無効化
     });
 
+    this.textButton3 = new UI.UI_TxtBtn({
+      text: 'Start Button',
+      backgroundColor: '#007bff',
+      textColor: '#fff',
+      fontFamily: 'sans-serif',
+      fontSize: 20,
+      onClick: () => {
+        console.log('Start Button Pressed');
+      },
+      parent: document.body,
+      position: 'fixed',
+      left: '50%',
+      top: '30%',
+      zIndex: 1000,
+      scene: this,
+      gotoScene: 'SceneMainMenu' // シーン遷移のための設定
+    });
+
     // 2. 画像（中央）
     this.uiImage = new UI.UI_Img({
       src: 'Images/blueR.png',
       parent: document.body,
       position: 'fixed',
       left: '50%',
-      top: '30%',
+      top: '40%',
       className: 'sample-ui-image',
       backgroundColor: 'transparent',
       scale: 0.2,
@@ -74,7 +92,8 @@ export class SceneUiTest extends Phaser.Scene {
       left: '50%',
       top: '50%',
       zIndex: 1000,
-      scale: 1
+      scale: 1,
+      backgroundColor: 'transparent',
     });
 
     this.imgButton2 = new UI.UI_ImgBtn({
@@ -88,6 +107,7 @@ export class SceneUiTest extends Phaser.Scene {
       top: '50%',
       zIndex: 1000,
       scale: 1,
+      backgroundColor: 'transparent',
       enabled: false // 無効化
     });
 

@@ -31,8 +31,10 @@ export class UI_ImgBtn extends UI_BaseComponent {
     onClick,
     scene = null,
     gotoScene = null,
+    gotoSceneArgs = {},
     className = '',
     parent = document.body,
+    backgroundColor = '',
     position,
     left,
     top,
@@ -63,16 +65,17 @@ export class UI_ImgBtn extends UI_BaseComponent {
     el.style.cursor = 'pointer';
     el.style.transition = 'filter 0.2s, opacity 0.2s, transform 0.08s';
     el.style.padding = '0';
-    el.style.background = 'transparent';
+    el.style.background = backgroundColor; 
     el.style.userSelect = 'none';
     el.style.webkitUserSelect = 'none';
     el.style.touchAction = 'manipulation';
     el.style.outline = 'none';
     el.style.webkitTapHighlightColor = 'transparent';
 
-    super({ el, className, parent, position, left, top, right, bottom, zIndex, center });
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, center, backgroundColor });
 
     this.enabled = enabled;
+    this._gotoSceneArgs = gotoSceneArgs || {};
 
     this.img = document.createElement('img');
     this.img.src = imageSrc;
@@ -89,14 +92,18 @@ export class UI_ImgBtn extends UI_BaseComponent {
     // onClickまたはgotoScene指定時のイベント
     if (gotoScene && scene) {
       el.addEventListener('click', (e) => {
-        if (this.enabled && onClick) onClick(e);
-        if (this.enabled) scene.scene.start(gotoScene, { from: scene.key });
+        if (!this.enabled) return;
+        if (onClick) onClick(e);
+        // from: scene.key もデフォルトで付与
+        const args = Object.assign({ from: scene.key }, this._gotoSceneArgs);
+        scene.scene.start(gotoScene, args);
       });
     } else if (onClick) {
       el.addEventListener('click', (e) => {
         if (this.enabled) onClick(e);
       });
     }
+  
 
     // 押下時のアニメーション
     const baseTransform = this.center ? 'translate(-50%, -50%)' : '';    
@@ -131,5 +138,13 @@ export class UI_ImgBtn extends UI_BaseComponent {
       this.el.style.opacity = '0.5';
       this.el.style.cursor = 'not-allowed';
     }
+  }
+
+  /**
+   * ジャンプ先シーンに渡す引数を変更する
+   * @param {Object} args
+   */
+  setGotoSceneArgs(args) {
+    this._gotoSceneArgs = args || {};
   }
 }

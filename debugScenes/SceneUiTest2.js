@@ -210,7 +210,8 @@ export class SceneUiTest2 extends Phaser.Scene {
     const imgBtn = new UI.UI_ImgBtn({
       imageSrc: 'Images/BtnGreen.png',
       text: 'ImgBtn',
-      fontSize: 16
+      fontSize: 16,
+      backgroundColor: 'transparent',
     });
     this.freeContainer.add(imgBtn, { left: '100%', top: '70%' });
 

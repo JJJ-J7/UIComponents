@@ -37,6 +37,7 @@ export class UI_TxtBtn extends UI_BaseComponent {
     onClick,
     scene = null,
     gotoScene = null,
+    gotoSceneArgs = {},
     className = '',
     parent = document.body,
     position,
@@ -49,21 +50,28 @@ export class UI_TxtBtn extends UI_BaseComponent {
   } = {}) {
     const el = document.createElement('button');
     el.type = 'button';
-    // width/height未指定時はテキストサイズ＋マージンで自動設定
-    if (width !== undefined && height !== undefined) {
+    // width/heightが未定義の方のみマージンを加味して自動調整
+    const marginH = 16, marginV = 8;
+    if (width !== undefined) {
       el.style.width = width + 'px';
+    } else {
+      el.style.width = 'auto';
+      setTimeout(() => {
+        const rect = el.getBoundingClientRect();
+        el.style.width = (rect.width + marginH * 2) + 'px';
+        el.style.paddingLeft = marginH + 'px';
+        el.style.paddingRight = marginH + 'px';
+      }, 0);
+    }
+    if (height !== undefined) {
       el.style.height = height + 'px';
     } else {
-      // 仮サイズで描画し、レイアウト後に自動調整
-      el.style.width = 'auto';
       el.style.height = 'auto';
       setTimeout(() => {
         const rect = el.getBoundingClientRect();
-        // デフォルトマージン: 左右16px, 上下8px
-        const marginH = 16, marginV = 8;
-        el.style.width = (rect.width + marginH * 2) + 'px';
         el.style.height = (rect.height + marginV * 2) + 'px';
-        el.style.padding = marginV + 'px ' + marginH + 'px';
+        el.style.paddingTop = marginV + 'px';
+        el.style.paddingBottom = marginV + 'px';
       }, 0);
     }
     el.style.border = 'none';
@@ -84,6 +92,7 @@ export class UI_TxtBtn extends UI_BaseComponent {
     this._backgroundColor = backgroundColor;
     this._textColor = textColor;
     this.enabled = enabled;
+    this._gotoSceneArgs = gotoSceneArgs || {};
 
     // イベント
     // onClickまたはgotoScene指定時のイベント
@@ -98,7 +107,9 @@ export class UI_TxtBtn extends UI_BaseComponent {
         el.style.transform = `${this.center ? 'translate(-50%, -50%)' : ''} scale(1)`;
         // アニメーション時間(80ms)後にシーンジャンプ
         setTimeout(() => {
-          scene.scene.start(gotoScene, { from: scene.key });
+          // from: scene.key もデフォルトで付与
+          const args = Object.assign({ from: scene.key }, this._gotoSceneArgs);
+          scene.scene.start(gotoScene, args);
           this._jumping = false;
         }, 100);
       });
@@ -107,6 +118,7 @@ export class UI_TxtBtn extends UI_BaseComponent {
         if (this.enabled) onClick(e);
       });
     }
+  
 
     // 押下時のアニメーション
     const baseTransform = this.center ? 'translate(-50%, -50%)' : '';    
@@ -168,5 +180,13 @@ export class UI_TxtBtn extends UI_BaseComponent {
         this.el.style.top = (this.top + rect.height/2) + 'px';
       }
     }
+  }
+
+  /**
+   * ジャンプ先シーンに渡す引数を変更する
+   * @param {Object} args
+   */
+  setGotoSceneArgs(args) {
+    this._gotoSceneArgs = args || {};
   }
 }

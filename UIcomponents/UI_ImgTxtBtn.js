@@ -43,6 +43,7 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
     onClick,
     scene = null,
     gotoScene = null,
+    gotoSceneArgs = {},
     className = '',
     parent = document.body,
     imagePosition = 'left',
@@ -105,6 +106,7 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
     super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center });
 
     this.enabled = enabled;
+    this._gotoSceneArgs = gotoSceneArgs || {};
 
     this.img = document.createElement('img');
     this.img.src = imageSrc;
@@ -167,14 +169,18 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
     // onClickまたはgotoScene指定時のイベント
     if (gotoScene && scene) {
       el.addEventListener('click', (e) => {
-        if (this.enabled && onClick) onClick(e);
-        if (this.enabled) scene.scene.start(gotoScene, { from: scene.key });
+        if (!this.enabled) return;
+        if (onClick) onClick(e);
+        // from: scene.key もデフォルトで付与
+        const args = Object.assign({ from: scene.key }, this._gotoSceneArgs);
+        scene.scene.start(gotoScene, args);
       });
     } else if (onClick) {
       el.addEventListener('click', (e) => {
         if (this.enabled) onClick(e);
       });
     }
+  
 
     // 押下時のアニメーション
     const baseTransform = this.center ? 'translate(-50%, -50%)' : '';    
@@ -235,5 +241,13 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
       this.el.style.width = totalWidth + 'px';
       this.el.style.height = totalHeight + 'px';
     }, 0);
+  }
+
+  /**
+   * ジャンプ先シーンに渡す引数を変更する
+   * @param {Object} args
+   */
+  setGotoSceneArgs(args) {
+    this._gotoSceneArgs = args || {};
   }
 }
