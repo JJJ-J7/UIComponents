@@ -25,3 +25,9 @@ export const UI_FontSize = {
   // 必要に応じて追加
 };
 
+export const UI_Settings = {
+  fadeInDuration: 100,
+  fadeOutDuration: 100,
+  crossFadeDelay: 20,
+  // 必要に応じて追加
+};

@@ -80,12 +80,39 @@ export class SceneUiTest2 extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(UI.UI_ThemeColors.background);
     console.log(`${this.scene.key} created`);
 
+    //document.body.style.transition = 'opacity 0.4s';
+    //document.body.style.opacity = '1.0';
+
     this.events.on('shutdown', this.shutdown, this);
     this.events.on('destroy', this.shutdown, this);
+
+    
 
     // 戻り先シーン名をdata.fromから取得（なければSceneUiTest）
     const data = arguments[0] || {};
     const returnScene = data.from || 'SceneUiTest';
+
+    // 0. UI親
+    const uiParent = new UI.UI_FreeContainer({
+      className: 'ui-parent',
+      parent: document.body,
+      position: 'fixed',
+      left: '50%',
+      top: '50%',
+      width: innerWidth,
+      height: innerHeight,
+      zIndex: 1000,
+      center: true,
+      sceneKey: this.scene.key // 現在のシーンキーを設定
+    });
+    // DOMフェードイン
+    uiParent.el.style.opacity = '0.0'; // 初期は透明にしておく
+    setTimeout(() => {
+      uiParent.el.style.transition = `opacity ${UI.UI_Settings.fadeInDuration/1000}s`;
+      uiParent.el.style.opacity = '1.0';
+    }, UI.UI_Settings.crossFadeDelay);
+
+    // 1. 戻るボタン（中央やや上）
     this.backButton = new UI.UI_TxtBtn({
       text: `Back`,
       backgroundColor: '#28a745',
@@ -93,7 +120,7 @@ export class SceneUiTest2 extends Phaser.Scene {
       fontFamily: 'sans-serif',
       fontSize: 20,
       width: 200,
-      parent: document.body,
+      parent: uiParent.el,
       position: 'fixed',
       left: '50%',
       top: '10%',
@@ -109,7 +136,7 @@ export class SceneUiTest2 extends Phaser.Scene {
       gap: 8,
       width: 400,
       height: 100,
-      parent: document.body,
+      parent: uiParent.el,
       position: 'fixed',
       left: '50%',
       top: '20%',
@@ -143,7 +170,7 @@ export class SceneUiTest2 extends Phaser.Scene {
       gap: 8,
       width: 400,
       height: 200,
-      parent: document.body,
+      parent: uiParent.el,
       position: 'fixed',
       left: '50%',
       top: '40%',
@@ -176,7 +203,7 @@ export class SceneUiTest2 extends Phaser.Scene {
       width: 400,
       height: 300,
       backgroundColor: 'rgba(1, 136, 141, 1)',
-      parent: document.body,
+      parent: uiParent.el,
       position: 'fixed',
       left: '50%',
       top: '70%',
@@ -257,7 +284,7 @@ export class SceneUiTest2 extends Phaser.Scene {
         }
         this.sampleDialog.el.style.display = '';
       },
-      parent: document.body,
+      parent: uiParent.el,
       position: 'fixed',
       left: '50%',
       top: '90%',
@@ -267,8 +294,10 @@ export class SceneUiTest2 extends Phaser.Scene {
   }
 
   shutdown() {
-    // document.body配下のUI_BaseComponent系要素を一括destroy
-    const uiEls = Array.from(document.body.querySelectorAll('[data-ui-component]'));
+    // このシーンが生成したUI_BaseComponent系要素のみdestroy
+    console.log(`${this.scene.key} shutdown`);
+    const selector = `[data-ui-component][data-ui-scene="${this.scene.key}"]`;
+    const uiEls = Array.from(document.body.querySelectorAll(selector));
     uiEls.forEach(el => {
       if (el.__uiInstance && typeof el.__uiInstance.destroy === 'function') {
         el.__uiInstance.destroy();

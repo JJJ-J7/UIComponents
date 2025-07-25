@@ -39,7 +39,8 @@ export class UI_FreeContainer extends UI_BaseComponent {
     center,
     borderRadius,
     onClick,
-    pointerEvents
+    pointerEvents,
+    sceneKey = null,
   }) {
     const el = document.createElement('div');
     el.style.position = position;
@@ -63,7 +64,7 @@ export class UI_FreeContainer extends UI_BaseComponent {
       // pointerEventsが未指定ならautoに
       if (!pointerEvents) el.style.pointerEvents = 'auto';
     }
-    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center });
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center, sceneKey });
     this.el = el;
 
     this.children = [];

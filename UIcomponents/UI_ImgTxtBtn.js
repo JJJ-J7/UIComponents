@@ -1,5 +1,5 @@
 import { UI_BaseComponent } from './UI_BaseComponent.js';
-import { UI_ThemeColors } from './UI_ThemeColors.js';
+import * as UI from './UI_Settings.js';
 
 /**
  * 画像＋テキストボタンUI
@@ -32,8 +32,8 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
     imageSrc,
     alt = '',
     text,
-    textColor = UI_ThemeColors.txtLight,
-    backgroundColor = UI_ThemeColors.btnActive,
+    textColor = UI.UI_ThemeColors.txtLight,
+    backgroundColor = UI.UI_ThemeColors.btnActive,
     fontFamily = 'sans-serif',
     fontSize = 20,
     width,
@@ -54,7 +54,8 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
     right,
     bottom,
     zIndex,
-    center = true
+    center = true,
+    sceneKey = null,
   } = {}) {
     const el = document.createElement('button');
     el.type = 'button';
@@ -103,7 +104,7 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
     el.style.webkitTapHighlightColor = 'transparent';
     el.style.background = backgroundColor;
 
-    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center });
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center, sceneKey });
 
     this.enabled = enabled;
     this._gotoSceneArgs = gotoSceneArgs || {};
@@ -167,13 +168,37 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
 
     // イベント
     // onClickまたはgotoScene指定時のイベント
+    // 多重発火防止用フラグ
+    this._jumping = false;
     if (gotoScene && scene) {
       el.addEventListener('click', (e) => {
-        if (!this.enabled) return;
+        if (!this.enabled || this._jumping) return;
+        this._jumping = true;
         if (onClick) onClick(e);
-        // from: scene.key もデフォルトで付与
-        const args = Object.assign({ from: scene.key }, this._gotoSceneArgs);
-        scene.scene.start(gotoScene, args);
+        // 押下アニメーションを再生（scale(1)に戻す）
+        el.style.transform = `${this.center ? 'translate(-50%, -50%)' : ''} scale(1)`;
+        // アニメーション時間(80ms)後にシーンジャンプ
+        setTimeout(() => {
+          // from: scene.key もデフォルトで付与
+          const args = Object.assign({ from: scene.key }, this._gotoSceneArgs);          
+          if (scene.scene.transition) {
+            // DOMも一緒にフェードアウト
+            const domParent = el.parentNode;
+            domParent.style.transition = `opacity ${UI.UI_Settings.fadeOutDuration/1000}s`;
+            domParent.style.opacity = '0';
+            scene.scene.transition({
+              target: gotoScene,
+              duration: UI.UI_Settings.fadeOutDuration,
+              data: args,
+              moveBelow: true,
+              onUpdate: null,
+              allowInput: false
+            });
+          } else {
+            scene.scene.start(gotoScene, args);
+          }
+          this._jumping = false;
+        }, 100);
       });
     } else if (onClick) {
       el.addEventListener('click', (e) => {

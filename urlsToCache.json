@@ -19,7 +19,7 @@
   "./UIcomponents/UI_Img.js",
   "./UIcomponents/UI_ImgBtn.js",
   "./UIcomponents/UI_ImgTxtBtn.js",
-  "./UIcomponents/UI_ThemeColors.js",
+  "./UIcomponents/UI_Settings.js",
   "./UIcomponents/UI_TxtBox.js",
   "./UIcomponents/UI_TxtBtn.js",
   "./urlsToCache.json"

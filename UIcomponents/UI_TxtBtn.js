@@ -1,5 +1,5 @@
 import { UI_BaseComponent } from './UI_BaseComponent.js';
-import { UI_ThemeColors } from './UI_ThemeColors.js';
+import * as UI from './UI_Settings.js';
 
 /**
  * テキストボタンUI
@@ -27,8 +27,8 @@ export class UI_TxtBtn extends UI_BaseComponent {
    */
   constructor({
     text,
-    textColor = UI_ThemeColors.txtLight,
-    backgroundColor = UI_ThemeColors.btnActive,
+    textColor = UI.UI_ThemeColors.txtLight,
+    backgroundColor = UI.UI_ThemeColors.btnActive,
     fontFamily,
     fontSize,
     width,
@@ -39,14 +39,15 @@ export class UI_TxtBtn extends UI_BaseComponent {
     gotoScene = null,
     gotoSceneArgs = {},
     className = '',
-    parent = document.body,
+    parent = null,
     position,
     left,
     top,
     right,
     bottom,
     zIndex,
-    center = true
+    center = true,
+    sceneKey = null,
   } = {}) {
     const el = document.createElement('button');
     el.type = 'button';
@@ -87,7 +88,7 @@ export class UI_TxtBtn extends UI_BaseComponent {
     el.style.webkitUserSelect = 'none';
     el.style.touchAction = 'manipulation';
 
-    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center });
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center, sceneKey });
 
     this._backgroundColor = backgroundColor;
     this._textColor = textColor;
@@ -108,8 +109,23 @@ export class UI_TxtBtn extends UI_BaseComponent {
         // アニメーション時間(80ms)後にシーンジャンプ
         setTimeout(() => {
           // from: scene.key もデフォルトで付与
-          const args = Object.assign({ from: scene.key }, this._gotoSceneArgs);
-          scene.scene.start(gotoScene, args);
+          const args = Object.assign({ from: scene.key }, this._gotoSceneArgs);          
+          if (scene.scene.transition) {
+            // DOMも一緒にフェードアウト
+            const domParent = el.parentNode;
+            domParent.style.transition = `opacity ${UI.UI_Settings.fadeOutDuration/1000}s`;
+            domParent.style.opacity = '0';
+            scene.scene.transition({
+              target: gotoScene,
+              duration: UI.UI_Settings.fadeOutDuration,
+              data: args,
+              moveBelow: true,
+              onUpdate: null,
+              allowInput: false
+            });
+          } else {
+            scene.scene.start(gotoScene, args);
+          }
           this._jumping = false;
         }, 100);
       });

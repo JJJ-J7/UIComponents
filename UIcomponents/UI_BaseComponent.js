@@ -24,7 +24,8 @@ export class UI_BaseComponent {
     bottom,
     zIndex,
     backgroundColor = '',
-    center = true
+    center = true,
+    sceneKey = null,
   } = {}) {
     //console.log('UI_BaseComponent:');
     this.el = el;
@@ -33,6 +34,10 @@ export class UI_BaseComponent {
     }
     // UIコンポーネント識別用属性とインスタンス参照
     this.el.setAttribute('data-ui-component', '');
+    // 親シーンのkeyがあればdata-ui-scene属性を付与
+    if (sceneKey) {
+      this.el.setAttribute('data-ui-scene', sceneKey);
+    }
     this.el.__uiInstance = this;
     this.className = className;
     if (className) this.el.className = className;

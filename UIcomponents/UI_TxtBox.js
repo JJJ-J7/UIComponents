@@ -1,5 +1,5 @@
 import { UI_BaseComponent } from './UI_BaseComponent.js';
-import { UI_ThemeColors } from './UI_ThemeColors.js';
+import * as UI from './UI_Settings.js';
 
 export class UI_TxtBox extends UI_BaseComponent {
   /**
@@ -16,8 +16,8 @@ export class UI_TxtBox extends UI_BaseComponent {
    */
   constructor({
     text,
-    textColor = UI_ThemeColors.txtDark,
-    backgroundColor = UI_ThemeColors.txtBgLight,
+    textColor = UI.UI_ThemeColors.txtDark,
+    backgroundColor = UI.UI_ThemeColors.txtBgLight,
     fontFamily = "sans-serif",
     fontSize = 20,
     width,
@@ -30,7 +30,8 @@ export class UI_TxtBox extends UI_BaseComponent {
     right,
     bottom,
     zIndex,
-    center = true
+    center = true,
+    sceneKey = null,
   } = {}) {
     const el = document.createElement('div');
     el.textContent = text;
@@ -58,7 +59,7 @@ export class UI_TxtBox extends UI_BaseComponent {
     el.style.justifyContent = 'center';
     el.style.borderRadius = '8px';
     el.style.boxSizing = 'border-box';
-    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center });
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center, sceneKey });
     this.el = el;
   }
 
