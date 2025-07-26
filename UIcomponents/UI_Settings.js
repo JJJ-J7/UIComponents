@@ -26,8 +26,9 @@ export const UI_FontSize = {
 };
 
 export const UI_Settings = {
-  fadeInDuration: 100,
-  fadeOutDuration: 100,
-  crossFadeDelay: 20,
+  fadeInDuration: 400,
+  fadeOutDuration: 200,
+  crossFadeDelay: 300,  // フェードアウトが始まってから何ms後にフェードインを開始するか
+  uiParentClassName: 'ui-parent',
   // 必要に応じて追加
 };

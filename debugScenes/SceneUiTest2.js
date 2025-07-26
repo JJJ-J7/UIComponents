@@ -3,7 +3,47 @@ import * as UI from '../UIcomponents/index.js';
 // サンプルダイアログクラス
 // 先頭に書くのはclass SceneUiTest2で呼び出す前に定義すべきだから。
 class SampleDialog extends UI.UI_FreeContainer {
-  constructor({ onClose } = {}) {
+  constructor({ 
+    x,
+    y,
+    width = window.innerWidth,
+    height = window.innerHeight,
+    backgroundColor = `transparent`,
+    borderRadius,
+    className = 'sample-dialog',
+    parent = document.body,
+    position = 'fixed',
+    left = '50%',
+    top = '50%',
+    right,
+    bottom,
+    zIndex = 2000,
+    center = true,
+    scene = null,
+    opacity = 1.0,
+   } = {}) {
+
+    // 空枠として親クラスの UI_FreeContainer のコンストラクタを呼び出す
+    super({ 
+      x,
+      y,
+      width,
+      height,
+      backgroundColor,
+      borderRadius,
+      className,
+      parent,
+      position,
+      left,
+      top,
+      right,
+      bottom,
+      zIndex,
+      center,
+      scene,
+      opacity,
+     });
+
     // UI_FreeContainerで下敷きを生成
     const bgbase = new UI.UI_FreeContainer({
       left: '50%',
@@ -11,59 +51,66 @@ class SampleDialog extends UI.UI_FreeContainer {
       width: window.innerWidth,
       height: window.innerHeight,
       backgroundColor: UI.UI_ThemeColors.bgbase,
-      zIndex: 1999,
+      zIndex: 0,
       position: 'fixed',
       className: 'sample-dialog-overlay',
-      parent: document.body,
-      onClick: () => this.close()
+      parent: this.el,
+      onClick: () => this.close(),
+      scene: scene, // 現在のシーンを設定
     });
+    this.el.appendChild(bgbase.el);
+    this._bgbase = bgbase;
 
-    super({
+    // ダイアログ本体
+    const dialogBody = new UI.UI_FreeContainer({
       width: 320,
       height: 180,
-      backgroundColor: UI.UI_ThemeColors.background,
-      borderRadius: 16,
-      zIndex: 2000,
-      position: 'fixed',
       left: '50%',
       top: '50%',
-      className: 'sample-dialog',
-      parent: document.body
+      backgroundColor: UI.UI_ThemeColors.background,
+      borderRadius: 16,
+      //zIndex: 1000,
+      position: 'fixed',
+      className: 'dialog-body',
+      parent: this.el,
+      scene: scene, // 現在のシーンを設定
     });
-    this._bgbase = bgbase;
-    this._onClose = onClose;
-
+    this.add(dialogBody, { right: '50%', top: '50%' });    
+    
     // 閉じるボタン
     const closeBtn = new UI.UI_TxtBtn({
       text: '×',
       width: 40,
       height: 40,
       backgroundColor: '#e44',
+      parent: this.el,
       textColor: '#fff',
       fontSize: 22,
-      onClick: () => this.close()
+      onClick: () => this.close(),
+      scene: scene, // 現在のシーンを設定
     });
-    this.add(closeBtn, { right: '5%', top: '15%' });
+    dialogBody.add(closeBtn, { right: '5%', top: '15%' });
   
     // サンプルテキスト
     const label = new UI.UI_TxtBox({
       text: 'This is a sample dialog.',
       width: 200,
       height: 40,
+      parent: this.el,
       backgroundColor: 'transparent',
       textColor: UI.UI_ThemeColors.txtDark,
-      fontSize: 18
+      fontSize: 18,
+      scene: scene, // 現在のシーンを設定
     });
-    this.add(label, { left: '50%', top: '50%' });
+    dialogBody.add(label, { left: '50%', top: '50%' });
   }
 
   /**
    * ダイアログとオーバーレイを閉じる（共通処理）
    */
   close() {
-    this.el.remove();
-    if (this._bgbase && this._bgbase.el && this._bgbase.el.parentNode) this._bgbase.el.remove();
-    if (typeof this._onClose === 'function') this._onClose();
+    console.log('Dialog closed');
+    this.fadeOut({ isDestroy: true });
   }
 }
 
@@ -82,7 +129,10 @@ export class SceneUiTest2 extends Phaser.Scene {
 
     //document.body.style.transition = 'opacity 0.4s';
     //document.body.style.opacity = '1.0';
-
+    
+    // イベントリスナー多重登録防止
+    this.events.off('shutdown', this.shutdown, this);
+    this.events.off('destroy', this.shutdown, this);
     this.events.on('shutdown', this.shutdown, this);
     this.events.on('destroy', this.shutdown, this);
 
@@ -93,8 +143,8 @@ export class SceneUiTest2 extends Phaser.Scene {
     const returnScene = data.from || 'SceneUiTest';
 
     // 0. UI親
-    const uiParent = new UI.UI_FreeContainer({
-      className: 'ui-parent',
+    this.uiParent = new UI.UI_FreeContainer({
+      className: UI.UI_Settings.uiParentClassName,
       parent: document.body,
       position: 'fixed',
       left: '50%',
@@ -103,14 +153,11 @@ export class SceneUiTest2 extends Phaser.Scene {
       height: innerHeight,
       zIndex: 1000,
       center: true,
-      sceneKey: this.scene.key // 現在のシーンキーを設定
+      scene: this, // 現在のシーンを設定
+      opacity: 0.0,
     });
     // DOMフェードイン
-    uiParent.el.style.opacity = '0.0'; // 初期は透明にしておく
-    setTimeout(() => {
-      uiParent.el.style.transition = `opacity ${UI.UI_Settings.fadeInDuration/1000}s`;
-      uiParent.el.style.opacity = '1.0';
-    }, UI.UI_Settings.crossFadeDelay);
+    this.uiParent.fadeIn({ delay: UI.UI_Settings.crossFadeDelay });
 
     // 1. 戻るボタン（中央やや上）
     this.backButton = new UI.UI_TxtBtn({
@@ -120,7 +167,7 @@ export class SceneUiTest2 extends Phaser.Scene {
       fontFamily: 'sans-serif',
       fontSize: 20,
       width: 200,
-      parent: uiParent.el,
+      parent: this.uiParent.el,
       position: 'fixed',
       left: '50%',
       top: '10%',
@@ -136,12 +183,13 @@ export class SceneUiTest2 extends Phaser.Scene {
       gap: 8,
       width: 400,
       height: 100,
-      parent: uiParent.el,
+      parent: this.uiParent.el,
       position: 'fixed',
       left: '50%',
       top: '20%',
       zIndex: 1000,
-      center: true
+      center: true,
+      scene: this, // 現在のシーンを設定
     });
 
     this.gridBtnsH = [];
@@ -156,10 +204,11 @@ export class SceneUiTest2 extends Phaser.Scene {
           textColor: '#fff',
           left: '50%',
           top: '50%',
+          scene: this, // 現在のシーンを設定
         });
         this.gridH.addChild(btn, r, c);
         this.gridBtnsH.push(btn);
-        console.log(`Added buttonH at (${r+1},${c+1})`);
+        //console.log(`Added buttonH at (${r+1},${c+1})`);
       }
     }
 
@@ -170,12 +219,13 @@ export class SceneUiTest2 extends Phaser.Scene {
       gap: 8,
       width: 400,
       height: 200,
-      parent: uiParent.el,
+      parent: this.uiParent.el,
       position: 'fixed',
       left: '50%',
       top: '40%',
       zIndex: 1000,
-      center: true
+      center: true,
+      scene: this // 現在のシーンを設定
     });
 
     this.gridBtnsV = [];
@@ -191,10 +241,11 @@ export class SceneUiTest2 extends Phaser.Scene {
           left: '50%',
           top: '50%',
           //center: true
+          scene: this, // 現在のシーンを設定
         });
         this.gridV.addChild(btn, r, c);
         this.gridBtnsV.push(btn);
-        console.log(`Added buttonV at (${r+1},${c+1})`);
+        //console.log(`Added buttonV at (${r+1},${c+1})`);
       }
     }
 
@@ -203,12 +254,13 @@ export class SceneUiTest2 extends Phaser.Scene {
       width: 400,
       height: 300,
       backgroundColor: 'rgba(1, 136, 141, 1)',
-      parent: uiParent.el,
+      parent: this.uiParent.el,
       position: 'fixed',
       left: '50%',
       top: '70%',
       zIndex: 1000,
       borderRadius: 30,
+      scene: this, // 現在のシーンを設定
     });
 
     // UI_TxtBox
@@ -218,7 +270,8 @@ export class SceneUiTest2 extends Phaser.Scene {
       height: 40,
       backgroundColor: '#fff',
       textColor: '#222',
-      fontSize: 18
+      fontSize: 18,
+      scene: this, // 現在のシーンを設定
     });
     this.freeContainer.add(txtBox, { left: '0%', top: '10%' });
 
@@ -229,7 +282,8 @@ export class SceneUiTest2 extends Phaser.Scene {
       height: 40,
       backgroundColor: '#28a745',
       textColor: '#fff',
-      fontSize: 18
+      fontSize: 18,
+      scene: this, // 現在のシーンを設定
     });
     this.freeContainer.add(txtBtn, { left: '30%', top: '20%' });
 
@@ -239,6 +293,7 @@ export class SceneUiTest2 extends Phaser.Scene {
       text: 'ImgBtn',
       fontSize: 16,
       backgroundColor: 'transparent',
+      scene: this, // 現在のシーンを設定
     });
     this.freeContainer.add(imgBtn, { left: '100%', top: '70%' });
 
@@ -250,6 +305,7 @@ export class SceneUiTest2 extends Phaser.Scene {
       height: 150,
       parent: undefined,
       backgroundColor: '#e0e0f0',
+      scene: this, // 現在のシーンを設定
     });
     for (let r = 0; r < 6; r++) {
       const btn = new UI.UI_TxtBtn({
@@ -260,7 +316,8 @@ export class SceneUiTest2 extends Phaser.Scene {
         textColor: '#fff',
         fontSize: 16,
         left: '50%',
-        top: '50%'
+        top: '50%',
+        scene: this, // 現在のシーンを設定
       });
       grid.addChild(btn, r, 0);
     }
@@ -273,37 +330,31 @@ export class SceneUiTest2 extends Phaser.Scene {
       fontFamily: 'sans-serif',
       fontSize: 20,
       onClick: () => {
+        this.sampleDialog = null;
         if (!this.sampleDialog) {
           this.sampleDialog = new SampleDialog({
-            onClose: () => { this.sampleDialog = null; }
+            parent: this.uiParent.el,
+            scene: this, // 現在のシーンを設定
+            opacity: 0.0,
           });
-        } else {
-          if (!document.body.contains(this.sampleDialog.el)) {
-            document.body.appendChild(this.sampleDialog.el);
-          }
+          this.sampleDialog.fadeIn();
         }
-        this.sampleDialog.el.style.display = '';
       },
-      parent: uiParent.el,
+      parent: this.uiParent.el,
       position: 'fixed',
       left: '50%',
       top: '90%',
       zIndex: 1000,
+      scene: this, // 現在のシーンを設定
     });
 
   }
 
   shutdown() {
-    // このシーンが生成したUI_BaseComponent系要素のみdestroy
+    // UI親コンテナのみdestroy（配下DOMもまとめて破棄）
     console.log(`${this.scene.key} shutdown`);
-    const selector = `[data-ui-component][data-ui-scene="${this.scene.key}"]`;
-    const uiEls = Array.from(document.body.querySelectorAll(selector));
-    uiEls.forEach(el => {
-      if (el.__uiInstance && typeof el.__uiInstance.destroy === 'function') {
-        el.__uiInstance.destroy();
-      } else {
-        el.remove();
-      }
-    });
+    if (this.uiParent && typeof this.uiParent.destroy === 'function') {
+      this.uiParent.destroy();
+    }
   }
 }

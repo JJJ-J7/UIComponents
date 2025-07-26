@@ -55,7 +55,7 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
     bottom,
     zIndex,
     center = true,
-    sceneKey = null,
+    opacity = 1.0,
   } = {}) {
     const el = document.createElement('button');
     el.type = 'button';
@@ -104,7 +104,7 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
     el.style.webkitTapHighlightColor = 'transparent';
     el.style.background = backgroundColor;
 
-    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center, sceneKey });
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center, scene, opacity });
 
     this.enabled = enabled;
     this._gotoSceneArgs = gotoSceneArgs || {};
@@ -173,32 +173,18 @@ export class UI_ImgTxtBtn extends UI_BaseComponent {
     if (gotoScene && scene) {
       el.addEventListener('click', (e) => {
         if (!this.enabled || this._jumping) return;
-        this._jumping = true;
-        if (onClick) onClick(e);
-        // 押下アニメーションを再生（scale(1)に戻す）
+        // ボタンのアニメーションを原型に固定
         el.style.transform = `${this.center ? 'translate(-50%, -50%)' : ''} scale(1)`;
-        // アニメーション時間(80ms)後にシーンジャンプ
-        setTimeout(() => {
-          // from: scene.key もデフォルトで付与
-          const args = Object.assign({ from: scene.key }, this._gotoSceneArgs);          
-          if (scene.scene.transition) {
-            // DOMも一緒にフェードアウト
-            const domParent = el.parentNode;
-            domParent.style.transition = `opacity ${UI.UI_Settings.fadeOutDuration/1000}s`;
-            domParent.style.opacity = '0';
-            scene.scene.transition({
-              target: gotoScene,
-              duration: UI.UI_Settings.fadeOutDuration,
-              data: args,
-              moveBelow: true,
-              onUpdate: null,
-              allowInput: false
-            });
-          } else {
-            scene.scene.start(gotoScene, args);
-          }
-          this._jumping = false;
-        }, 100);
+        this._jumping = true;
+        if (onClick) onClick();
+        this.jumpToScene({
+          scene,
+          gotoScene,
+          gotoSceneArgs: this._gotoSceneArgs,
+          el,
+          onClick: onClick ? (ev) => onClick(ev) : undefined
+        });
+        this._jumping = false;
       });
     } else if (onClick) {
       el.addEventListener('click', (e) => {

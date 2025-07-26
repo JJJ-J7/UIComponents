@@ -29,7 +29,8 @@ export class UI_Img extends UI_BaseComponent {
     bottom,
     zIndex,
     center = true,
-    sceneKey = null,
+    scene = null,
+    opacity = 1.0,
   } = {}) {
     const el = document.createElement('img');
     el.src = src;
@@ -58,7 +59,7 @@ export class UI_Img extends UI_BaseComponent {
       };
     }
 
-    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center, sceneKey });
+    super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center, scene, opacity });
     this.el = el;
   }
 }

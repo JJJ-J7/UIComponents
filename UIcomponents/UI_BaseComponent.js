@@ -1,3 +1,5 @@
+import * as UI from './UI_Settings.js';
+
 export class UI_BaseComponent {
   /**
    * @param {Object} options
@@ -25,7 +27,8 @@ export class UI_BaseComponent {
     zIndex,
     backgroundColor = '',
     center = true,
-    sceneKey = null,
+    opacity = 1.0,
+    scene = null,
   } = {}) {
     //console.log('UI_BaseComponent:');
     this.el = el;
@@ -35,8 +38,8 @@ export class UI_BaseComponent {
     // UIコンポーネント識別用属性とインスタンス参照
     this.el.setAttribute('data-ui-component', '');
     // 親シーンのkeyがあればdata-ui-scene属性を付与
-    if (sceneKey) {
-      this.el.setAttribute('data-ui-scene', sceneKey);
+    if (scene) {
+      this.el.setAttribute('data-ui-scene', scene.scene.key);
     }
     this.el.__uiInstance = this;
     this.className = className;
@@ -59,11 +62,64 @@ export class UI_BaseComponent {
     if (center) {
       this.el.style.transform = 'translate(-50%, -50%)';
     }
+    // 透明度初期値
+    this.opacity = opacity;
+    this.el.style.opacity = typeof opacity === 'number' ? opacity : 1.0;
     this.parent = parent;
     if (parent && this.el) parent.appendChild(this.el);
     this._destroyTimer = null;
-    //console.log(`[${new Date().toISOString()}] BaseComponent outerHTML:`, this.el.outerHTML);
+    this.scene = scene;
+
+      //console.log(`[${new Date().toISOString()}] BaseComponent outerHTML:`, this.el.outerHTML);
   }
+  /**
+   * フェードイン
+   * @param {number} [duration] - フェードイン時間(ms)
+   * @param {number} [delay] - 開始までの待ち時間(ms)
+   * @param {function} [onComplete] - 完了時コールバック
+   */
+  /**
+   * フェードイン
+   * @param {number} [duration] - フェードイン時間(ms)
+   * @param {number} [delay] - 開始までの待ち時間(ms)
+   * @param {function} [onComplete] - 完了時コールバック
+   */
+  fadeIn({duration = UI.UI_Settings.fadeInDuration, delay = 0, onComplete} = {}) {
+    if (!this.el) return;
+    this.el.style.transition = `opacity ${duration/1000}s`;
+    this.el.style.opacity = 0;
+    setTimeout(() => {
+      this.el.style.opacity = 1.0;
+      if (typeof onComplete === 'function') {
+        setTimeout(onComplete, duration);
+      }
+    }, delay);
+  }
+
+  /**
+   * フェードアウト
+   * @param {number} [duration] - フェードアウト時間(ms)
+   * @param {number} [delay] - 開始までの待ち時間(ms)
+   * @param {function} [onComplete] - 完了時コールバック
+   * @param {boolean} [isDestroy=false] - 完了後にdestroyするか
+   */
+  fadeOut({duration = UI.UI_Settings.fadeOutDuration, delay = 0, onComplete, isDestroy = false} = {}) {
+    if (!this.el) return;
+    //console.log(`デストロイ0: ${isDestroy}`);
+    this.el.style.transition = `opacity ${duration/1000}s`;
+    this.el.style.opacity = 1.0;
+    setTimeout(() => {
+      this.el.style.opacity = 0;
+      if (typeof onComplete === 'function') {
+        setTimeout(onComplete, duration);
+      }
+      if (isDestroy) {
+        setTimeout(() => this.destroy(), duration);
+        //console.log('デストロイ1');
+      }
+    }, delay);
+  }
+  
 
   show() {
     if (this.el) this.el.style.display = '';
@@ -71,6 +127,36 @@ export class UI_BaseComponent {
 
   hide() {
     if (this.el) this.el.style.display = 'none';
+  }
+
+    /**
+   * シーンジャンプ（フェードアウト＋scene.transition/start）を共通化
+   * @param {Object} params
+   * @param {Phaser.Scene} params.scene
+   * @param {string} params.gotoScene
+   * @param {Object} params.gotoSceneArgs
+   */
+  jumpToScene({ scene, gotoScene, gotoSceneArgs = {}, delay = 0 }) {
+    setTimeout(() => {    
+      if (!scene || !gotoScene) return;
+        
+      const args = Object.assign({ from: scene.key }, gotoSceneArgs);
+      if (scene.scene.transition) {
+        if (scene.uiParent && typeof scene.uiParent.fadeOut === 'function') {
+          scene.uiParent.fadeOut({ isDestroy: false });
+        }
+        scene.scene.transition({
+          target: gotoScene,
+          duration: UI.UI_Settings.fadeOutDuration,
+          data: args,
+          moveBelow: true,
+          onUpdate: null,
+          allowInput: false
+        });
+      } else {
+        scene.scene.start(gotoScene, args);
+      }
+    }, delay);
   }
 
   destroy() {
@@ -84,14 +170,14 @@ export class UI_BaseComponent {
   }
 
   /**
-   * 指定秒数後に自動でdestroyされる
-   * @param {number} seconds
+   * 指定ms後に自動でdestroyされる
+   * @param {number} delay
    */
-  destroyAfter(seconds) {
+  destroyAfter(delay) {
     if (this._destroyTimer) clearTimeout(this._destroyTimer);
     this._destroyTimer = setTimeout(() => {
       this.destroy();
-    }, seconds * 1000);
+    }, delay);
   }
 
   /**
