@@ -1,7 +1,7 @@
 {
-  "name": "My Phaser Game",
-  "short_name": "PhaserGame",
-  "description": "A simple Phaser game as PWA",
+  "name": "UI Components Sample",
+  "short_name": "UI Components Sample",
+  "description": "A simple Phaser with DOM UI Components as PWA",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",
