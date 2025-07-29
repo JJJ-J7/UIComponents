@@ -29,6 +29,7 @@ export const UI_Settings = {
   fadeInDuration: 240,
   fadeOutDuration: 150,
   crossFadeDelay: 200,  // フェードアウトが始まってから何ms後にフェードインを開始するか
+  BtnScaleDuration: 80,
   uiParentClassName: 'ui-parent',
   // 必要に応じて追加
 };

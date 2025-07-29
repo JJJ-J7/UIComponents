@@ -65,7 +65,7 @@ export class UI_ImgBtn extends UI_BaseComponent {
     el.style.border = 'none';
     el.style.borderRadius = '8px';
     el.style.cursor = 'pointer';
-    el.style.transition = 'filter 0.2s, opacity 0.2s, transform 0.08s';
+    el.style.transition = `filter 0.2s, opacity 0.2s, transform ${UI.UI_Settings.BtnScaleDuration/1000}s`;
     el.style.padding = '0';
     el.style.background = backgroundColor; 
     el.style.userSelect = 'none';

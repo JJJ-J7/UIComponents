@@ -138,7 +138,7 @@ export class SceneUiTest2 extends Phaser.Scene {
 
     
 
-    // 戻り先シーン名をdata.fromから取得（なければSceneUiTest）
+    // 戻り元シーン名をdata.fromから取得（なければSceneUiTest）
     const data = arguments[0] || {};
     const returnScene = data.from || 'SceneUiTest';
 

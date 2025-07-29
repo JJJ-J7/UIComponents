@@ -78,7 +78,7 @@ export class UI_TxtBtn extends UI_BaseComponent {
     el.style.border = 'none';
     el.style.borderRadius = '8px';
     el.style.cursor = 'pointer';
-    el.style.transition = 'filter 0.2s, opacity 0.2s, transform 0.08s';
+    el.style.transition = `filter 0.2s, opacity 0.2s, transform ${UI.UI_Settings.BtnScaleDuration/1000}s`;
     el.textContent = text;
     el.style.background = backgroundColor;
     el.style.color = textColor;
@@ -87,6 +87,7 @@ export class UI_TxtBtn extends UI_BaseComponent {
     el.style.userSelect = 'none';
     el.style.webkitUserSelect = 'none';
     el.style.touchAction = 'manipulation';
+    el.style.transition 
 
     super({ el, className, parent, position, left, top, right, bottom, zIndex, backgroundColor, center, scene, opacity });
 

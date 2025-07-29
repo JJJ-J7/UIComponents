@@ -25,7 +25,7 @@ export class SceneUiTest extends Phaser.Scene {
     this.events.on('shutdown', this.shutdown, this);
     this.events.on('destroy', this.shutdown, this);
 
-    // 戻り先シーン名をdata.fromから取得（なければSceneUiTest）
+    // 戻り元シーン名をdata.fromから取得（なければSceneUiTest）
     const data = arguments[0] || {};
     const returnScene = data.from || 'SceneUiTest';
     
@@ -100,7 +100,6 @@ export class SceneUiTest extends Phaser.Scene {
       zIndex: 1000,
       scene: this,
       gotoScene: 'SceneMainMenu', // シーン遷移のための設定
-      scene: this, // 現在のシーンを設定
     });
 
     // 2. 画像（中央）

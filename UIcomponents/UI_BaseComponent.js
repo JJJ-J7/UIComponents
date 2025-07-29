@@ -135,11 +135,17 @@ export class UI_BaseComponent {
    * @param {Phaser.Scene} params.scene
    * @param {string} params.gotoScene
    * @param {Object} params.gotoSceneArgs
+   * @param {number} [params.delay=0] - ジャンプまでの遅延時間(ms)
    */
   jumpToScene({ scene, gotoScene, gotoSceneArgs = {}, delay = 0 }) {
     setTimeout(() => {    
       if (!scene || !gotoScene) return;
-        
+      // 同じシーンへのジャンプは無視
+      if(scene.scene.key === gotoScene) {
+        console.warn(`Cannot jump to the same scene: ${gotoScene}`);
+        return;
+      }
+
       const args = Object.assign({ from: scene.key }, gotoSceneArgs);
       if (scene.scene.transition) {
         if (scene.uiParent && typeof scene.uiParent.fadeOut === 'function') {
