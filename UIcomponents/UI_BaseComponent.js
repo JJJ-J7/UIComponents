@@ -146,7 +146,7 @@ export class UI_BaseComponent {
         return;
       }
 
-      const args = Object.assign({ from: scene.key }, gotoSceneArgs);
+      const args = Object.assign({ from: scene.scene.key }, gotoSceneArgs);
       if (scene.scene.transition) {
         if (scene.uiParent && typeof scene.uiParent.fadeOut === 'function') {
           scene.uiParent.fadeOut({ isDestroy: false });
