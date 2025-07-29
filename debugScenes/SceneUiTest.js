@@ -102,13 +102,50 @@ export class SceneUiTest extends Phaser.Scene {
       gotoScene: 'SceneMainMenu', // シーン遷移のための設定
     });
 
+    this.textButton4 = new UI.UI_TxtBtn({
+      text: 'Reset Button',
+      backgroundColor: '#ff0037ff',
+      textColor: '#fff',
+      fontFamily: 'sans-serif',
+      fontSize: 20,
+      onClick: () => {
+        console.log('Reset Button Pressed');
+        // Service Workerのキャッシュを全削除し、ページをリロード
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(regs => {
+            return Promise.all(regs.map(r => r.unregister()));
+          }).then(() => {
+            // キャッシュも削除
+            if ('caches' in window) {
+              caches.keys().then(keys => {
+                return Promise.all(keys.map(key => caches.delete(key)));
+              }).then(() => {
+                location.reload();
+              });
+            } else {
+              location.reload();
+            }
+          });
+        } else {
+          location.reload();
+        }
+      },
+      parent: this.uiParent.el,
+      position: 'fixed',
+      left: '50%',
+      top: '30%',
+      zIndex: 1000,
+      scene: this,
+      gotoScene: 'SceneMainMenu', // シーン遷移のための設定
+    });
+
     // 2. 画像（中央）
     this.uiImage = new UI.UI_Img({
       src: 'Images/blueR.png',
       parent: this.uiParent.el,
       position: 'fixed',
       left: '50%',
-      top: '40%',
+      top: '50%',
       className: 'sample-ui-image',
       backgroundColor: 'transparent',
       scale: 0.2,
@@ -125,7 +162,7 @@ export class SceneUiTest extends Phaser.Scene {
       parent: this.uiParent.el,
       position: 'fixed',
       left: '50%',
-      top: '50%',
+      top: '60%',
       zIndex: 1000,
       scale: 1,
       backgroundColor: 'transparent',
@@ -140,7 +177,7 @@ export class SceneUiTest extends Phaser.Scene {
       parent: this.uiParent.el,
       position: 'fixed',
       left: '80%',
-      top: '50%',
+      top: '60%',
       zIndex: 1000,
       scale: 1,
       backgroundColor: 'transparent',

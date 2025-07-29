@@ -20,6 +20,7 @@ self.addEventListener("install", (event) => {
         })
       )
   );
+  console.log("Service Worker installed and cache created.");
 });
 
 // オフライン対応：キャッシュ優先
@@ -31,6 +32,7 @@ self.addEventListener("fetch", (event) => {
         });
     })
   );
+  
 });
 
 // 古いキャッシュを削除
