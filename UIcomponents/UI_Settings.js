@@ -12,6 +12,8 @@ export const UI_ThemeColors = {
   txtBgDark: '#242424ff', // テキストボックス背景（暗い）
   btnActive: '#007bff',   // メインボタン色
   btnInvalid: '#6c757d', // サブボタン色
+  btnSub: '#6c757d',    // サブボタン色
+  btnWarning: '#d40051ff', // 警告ボタン色
   border: '#dee2e6',    // 枠線
   bgbase: 'rgba(0,0,0,0.3)', // モーダル下敷き
   // 必要に応じて追加
