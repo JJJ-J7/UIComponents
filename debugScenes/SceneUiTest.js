@@ -133,7 +133,7 @@ export class SceneUiTest extends Phaser.Scene {
       parent: this.uiParent.el,
       position: 'fixed',
       left: '50%',
-      top: '30%',
+      top: '40%',
       zIndex: 1000,
       scene: this,
       gotoScene: 'SceneMainMenu', // シーン遷移のための設定
